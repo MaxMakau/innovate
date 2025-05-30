@@ -36,19 +36,3 @@ class Achievement(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Startup(models.Model):
-    name = models.CharField(max_length=200)
-    description = models.TextField()
-    image = models.ImageField(upload_to='startups/', blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    is_featured = models.BooleanField(default=False)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ['-created_date']
