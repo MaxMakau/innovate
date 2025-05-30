@@ -1,0 +1,139 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Blogs & Events Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Blogs & Events Management</h1>
+        <a href="{% url 'custom_admin:add_blog_event' %}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Add New
+        </a>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <form method="get" class="form-inline">
+                <div class="input-group mr-2">
+                    <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ search_query }}">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <select name="type" class="form-control mr-2" onchange="this.form.submit()">
+                    <option value="">All Content</option>
+                    <option value="blog" {% if current_type == 'blog' %}selected{% endif %}>Blogs Only</option>
+                    <option value="event" {% if current_type == 'event' %}selected{% endif %}>Events Only</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="row">
+        <!-- Blogs Section -->
+        {% if blogs %}
+        <div class="col-xl-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Blog Posts</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for blog in blogs %}
+                                <tr>
+                                    <td>{{ blog.title }}</td>
+                                    <td>{{ blog.author }}</td>
+                                    <td>{{ blog.created_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'custom_admin:update_blog_event' blog.id %}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'custom_admin:delete_blog_event' blog.id %}" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Events Section -->
+        {% if events %}
+        <div class="col-xl-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Upcoming Events</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for event in events %}
+                                <tr>
+                                    <td>{{ event.description|truncatechars:100 }}</td>
+                                    <td>{{ event.created_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'custom_admin:update_blog_event' event.id %}" class="btn btn-sm btn-info">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'custom_admin:delete_blog_event' event.id %}" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .table td {
+        vertical-align: middle;
+    }
+    .btn-sm {
+        margin: 0 2px;
+    }
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    .form-inline {
+        display: flex;
+        align-items: center;
+    }
+    .input-group {
+        width: auto;
+    }
+</style>
+{% endblock %}

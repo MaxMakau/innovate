@@ -1,0 +1,277 @@
+{% load static %}
+{% load video_filters %} 
+{% load custom_filters %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lesson.title }} - {{ lesson.module.course.title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+        }
+        .video-container iframe,
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .document-viewer {
+            width: 100%;
+            height: 700px; /* Adjust height as needed */
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden; /* Ensure iframe stays within bounds */
+        }
+        .lesson-text-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <header class="bg-white shadow-sm py-4 px-6 md:px-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{% url 'courses:course_detail' slug=lesson.module.course.slug %}" class="text-blue-600 hover:text-blue-800 font-semibold text-lg flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Back to Course: {{ lesson.module.course.title }}
+            </a>
+            <nav>
+                <a href="{% url 'courses:module_list' slug=lesson.module.course.slug %}" class="text-gray-600 hover:text-gray-800 ml-4">Modules</a>
+                <a href="{% url 'courses:course_progress' slug=lesson.module.course.slug %}" class="text-gray-600 hover:text-gray-800 ml-4">Progress</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                    <div class="p-3 mb-2 rounded-lg text-sm {% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% elif message.tags == 'info' %}bg-blue-100 text-blue-800{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800">{{ lesson.title }}</h1>
+                {% if progress.is_completed %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        Completed
+                    </span>
+                {% else %}
+                    <form action="{% url 'courses:mark_lesson_complete' pk=lesson.pk %}" method="post" class="inline-block">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+                            Mark as Complete
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <p class="text-gray-600 mb-6">{{ lesson.description }}</p>
+
+            <div class="lesson-content mb-8">
+                {% if lesson.lesson_type == 'video' and video_content %}
+                    <div class="video-container">
+                        {% if video_content.video_file %}
+                            <video controls preload="metadata" ontimeupdate="updateVideoProgress(this)" data-lesson-id="{{ lesson.pk }}"
+                                   {% if progress.video_current_time %}
+                                       onloadstart="this.currentTime={{ progress.video_current_time }};"
+                                   {% endif %}
+                            >
+                                <source src="{{ video_content.video_file.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% elif video_content.video_url %}
+                            {# Use the custom template filter to get the embed URL #}
+                            <iframe
+                                src="{{ video_content.video_url|youtube_embed_url }}"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        {% else %}
+                            <p class="text-red-500">No video content available for this lesson.</p>
+                        {% endif %}
+                    </div>
+                {% elif lesson.lesson_type == 'text' and text_content %}
+                    <div class="lesson-text-content text-gray-700 leading-relaxed">
+                        {{ text_content.content|safe }}
+
+                        {% for image in text_content.illustrations.all %}
+                            <div class="my-6 text-center">
+                                <img src="{{ image.image.url }}" alt="{{ image.caption }}" class="inline-block rounded-lg shadow-md">
+                                {% if image.caption %}
+                                    <p class="text-sm text-gray-500 mt-2">{{ image.caption }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        {% if text_content.document_file %}
+                            <div class="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <h3 class="text-lg font-semibold text-blue-800 mb-3">Supplementary Document:</h3>
+                                {% if text_content.document_file.url|ends_with:".pdf" %}
+                                    <p class="text-gray-700 mb-4">View the attached PDF document directly below:</p>
+                                    <div class="document-viewer">
+                                        <iframe src="{{ text_content.document_file.url }}" style="width:100%; height:100%;" frameborder="0"></iframe>
+                                    </div>
+                                {% else %}
+                                    <p class="text-gray-700 mb-4">This lesson includes a supplementary document. Click the link below to download:</p>
+                                    <a href="{{ text_content.document_file.url }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 transition duration-300 ease-in-out">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                        Download Document ({{ text_content.document_file.name|split:"/"|last }})
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p class="text-red-500">No content available for this lesson type.</p>
+                {% endif %}
+            </div>
+
+            {% if quiz %}
+                <div class="mt-8 p-6 bg-yellow-50 rounded-xl border border-yellow-200 shadow-md">
+                    <h2 class="text-2xl font-bold text-yellow-800 mb-4">Quiz: {{ quiz.title }}</h2>
+                    <p class="text-gray-700 mb-4">{{ quiz.description }}</p>
+                    <a href="{% url 'courses:quiz_detail' pk=quiz.pk %}" class="inline-flex items-center px-6 py-3 bg-yellow-600 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-700 transition duration-300 ease-in-out">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2h2a2 2 0 012 2v5a2 2 0 01-2 2H3a2 2 0 01-2-2v-5a2 2 0 012-2h2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                        Start Quiz
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="mt-8 flex justify-between items-center border-t pt-6">
+                {% if previous_lesson %}
+                    <a href="{% url 'courses:lesson_detail' pk=previous_lesson.pk %}" class="inline-flex items-center px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-300 transition duration-300 ease-in-out">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Previous Lesson
+                    </a>
+                {% else %}
+                    <span></span> {# Placeholder to keep justify-between working #}
+                {% endif %}
+
+                {% if next_lesson %}
+                    <a href="{% url 'courses:lesson_detail' pk=next_lesson.pk %}" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
+                        Next Lesson
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                {% else %}
+                    <a href="{% url 'courses:module_list' slug=lesson.module.course.slug %}" class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 ease-in-out">
+                        Finish Module
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 text-center text-sm">
+        <div class="container mx-auto">
+            &copy; {% now "Y" %} Your LMS. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript for updating video progress (AJAX)
+        // This function will be called by the 'ontimeupdate' event on the <video> tag
+        function updateVideoProgress(videoElement) {
+            const lessonId = videoElement.dataset.lessonId;
+            const currentTime = videoElement.currentTime;
+            const duration = videoElement.duration;
+
+            // Only send update every few seconds or if a significant change occurs
+            // This prevents excessive AJAX requests
+            if (videoElement.dataset.lastUpdateTime === undefined) {
+                videoElement.dataset.lastUpdateTime = 0;
+            }
+
+            const updateInterval = 5; // Update every 5 seconds
+            if (currentTime - parseFloat(videoElement.dataset.lastUpdateTime) >= updateInterval) {
+                videoElement.dataset.lastUpdateTime = currentTime;
+
+                const formData = new FormData();
+                formData.append('currentTime', currentTime);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}'); // Get CSRF token from Django
+
+                fetch(`/courses/lesson/${lessonId}/update_video_progress/`, { // Adjust URL as per your urls.py
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest', // Important for Django's is_ajax() check
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('Video progress updated:', data.currentTime);
+                    } else {
+                        console.error('Failed to update video progress:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending video progress:', error);
+                });
+            }
+
+            // Optional: Auto-mark complete if video is near end
+            if (duration > 0 && currentTime / duration > 0.95 && !videoElement.dataset.markedComplete) {
+                videoElement.dataset.markedComplete = true; // Prevent multiple calls
+                // Trigger the mark as complete form submission
+                const markCompleteForm = document.querySelector('form[action*="mark_lesson_complete"]');
+                if (markCompleteForm) {
+                    markCompleteForm.submit();
+                }
+            }
+        }
+
+        // Optional: Ensure video starts from where user left off
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoElement = document.querySelector('video[data-lesson-id]');
+            if (videoElement && videoElement.dataset.initialTime) {
+                videoElement.currentTime = parseFloat(videoElement.dataset.initialTime);
+            }
+        });
+
+    </script>
+</body>
+</html>

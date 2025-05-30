@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Innovate and Elevate Academy{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="{% url 'services:homepage' %}">
+                    <img src="{% static 'images/logo.png' %}" alt="Innovate and Elevate Academy">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{% url 'services:homepage' %}">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#startups">Startups</a></li>
+                <li><a href="#">Join Us</a></li>
+            </ul>
+            <div class="hamburger-menu" id="hamburger-btn">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="mobile-menu-header">
+                    <button class="close-menu" id="close-menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <ul class="mobile-nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#startups">Startups</a></li>
+                    <li><a href="#">Join Us</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">
+            {{ message }}
+            <button class="close-message"><i class="fas fa-times"></i></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> info@innovateandelevate.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Innovation Street, Tech City</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul style="display: flex; gap: 1rem; list-style: none;">
+                    <li><a href="{% url 'services:homepage' %}">Home</a></li>
+                    <li><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-media-links">
+                    <a href="https://www.linkedin.com" target="_blank" class="social-icon">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://www.twitter.com" target="_blank" class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.instagram.com" target="_blank" class="social-icon">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.facebook.com" target="_blank" class="social-icon">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; {% now "Y" %} Innovate & Elevate Leadership Academy. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu functionality
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMenuBtn = document.getElementById('close-menu');
+            const body = document.body;
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+
+            function toggleMenu() {
+                mobileMenu.classList.toggle('active');
+                body.classList.toggle('menu-open');
+                hamburgerBtn.classList.toggle('active');
+            }
+
+            if (hamburgerBtn && mobileMenu && closeMenuBtn) {
+                hamburgerBtn.addEventListener('click', toggleMenu);
+                closeMenuBtn.addEventListener('click', toggleMenu);
+
+                // Close menu when clicking on mobile nav links
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', toggleMenu);
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    const isClickInside = mobileMenu.contains(event.target) || 
+                                        hamburgerBtn.contains(event.target);
+                    if (!isClickInside && mobileMenu.classList.contains('active')) {
+                        toggleMenu();
+                    }
+                });
+
+                // Close mobile menu when window is resized to desktop size
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+                        toggleMenu();
+                    }
+                });
+            }
+
+            // Message dismissal
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(message => {
+                const closeBtn = message.querySelector('.close-message');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        message.remove();
+                    });
+                }
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    message.remove();
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>

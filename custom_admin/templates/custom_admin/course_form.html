@@ -1,0 +1,193 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="course-form">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
+        <a href="{% url 'custom_admin:course_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Courses
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="row">
+                    <!-- Basic Information -->
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Basic Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label">Course Title</label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.title.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.slug.id_for_label }}" class="form-label">Slug</label>
+                                    {{ form.slug }}
+                                    {% if form.slug.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.slug.errors }}
+                                        </div>
+                                    {% endif %}
+                                    {% if form.slug.help_text %}
+                                        <div class="form-text">{{ form.slug.help_text }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                                    {{ form.description }}
+                                    {% if form.description.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.description.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Details -->
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Course Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+                                    {{ form.category }}
+                                    {% if form.category.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.category.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.instructor.id_for_label }}" class="form-label">Instructor</label>
+                                    {{ form.instructor }}
+                                    {% if form.instructor.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.instructor.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.price.id_for_label }}" class="form-label">Price</label>
+                                    {{ form.price }}
+                                    {% if form.price.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.price.errors }}
+                                        </div>
+                                    {% endif %}
+                                    {% if form.price.help_text %}
+                                        <div class="form-text">{{ form.price.help_text }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.duration.id_for_label }}" class="form-label">Duration (weeks)</label>
+                                    {{ form.duration }}
+                                    {% if form.duration.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.duration.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.level.id_for_label }}" class="form-label">Level</label>
+                                    {{ form.level }}
+                                    {% if form.level.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.level.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                                    {{ form.status }}
+                                    {% if form.status.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.status.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.thumbnail.id_for_label }}" class="form-label">Thumbnail</label>
+                                    {{ form.thumbnail }}
+                                    {% if form.thumbnail.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.thumbnail.errors }}
+                                        </div>
+                                    {% endif %}
+                                    {% if form.thumbnail.help_text %}
+                                        <div class="form-text">{{ form.thumbnail.help_text }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a href="{% url 'custom_admin:course_list' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Course
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .course-form .form-control {
+        border-radius: 0.35rem;
+    }
+    .course-form .form-label {
+        font-weight: 500;
+        color: #5a5c69;
+    }
+    .card {
+        border: none;
+        border-radius: 0.35rem;
+    }
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+    }
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

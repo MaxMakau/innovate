@@ -1,0 +1,358 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}User Progress{% endblock %}
+
+{% block content %}
+<div class="user-progress">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">User Progress</h1>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary" id="exportBtn">
+                <i class="fas fa-download"></i> Export Data
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="search" class="form-label">Search</label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           value="{{ request.GET.search }}" placeholder="Search users or courses...">
+                </div>
+                <div class="col-md-2">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">All Status</option>
+                        <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                        <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="sort" class="form-label">Sort By</label>
+                    <select class="form-select" id="sort" name="sort">
+                        <option value="enrollment_date" {% if request.GET.sort == 'enrollment_date' %}selected{% endif %}>Enrollment Date</option>
+                        <option value="progress" {% if request.GET.sort == 'progress' %}selected{% endif %}>Progress</option>
+                        <option value="last_activity" {% if request.GET.sort == 'last_activity' %}selected{% endif %}>Last Activity</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="order" class="form-label">Order</label>
+                    <select class="form-select" id="order" name="order">
+                        <option value="desc" {% if request.GET.order == 'desc' %}selected{% endif %}>Descending</option>
+                        <option value="asc" {% if request.GET.order == 'asc' %}selected{% endif %}>Ascending</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <a href="{% url 'custom_admin:user_progress' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Progress Table -->
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Course</th>
+                            <th>Enrolled Date</th>
+                            <th>Progress</th>
+                            <th>Last Activity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for enrollment in enrollments %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar me-2">
+                                        {% if enrollment.student.profile.avatar %}
+                                            <img src="{{ enrollment.student.profile.avatar.url }}" alt="Avatar" class="rounded-circle">
+                                        {% else %}
+                                            <div class="avatar-placeholder">
+                                                {{ enrollment.student.get_full_name|default:enrollment.student.username|make_list|first|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ enrollment.student.get_full_name|default:enrollment.student.username }}</div>
+                                        <div class="text-muted small">{{ enrollment.student.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if enrollment.course.thumbnail %}
+                                        <img src="{{ enrollment.course.thumbnail.url }}" alt="Course" class="course-thumbnail me-2">
+                                    {% endif %}
+                                    <div>
+                                        <div class="fw-bold">{{ enrollment.course.title }}</div>
+                                        <div class="text-muted small">{{ enrollment.course.category.name }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ enrollment.enrollment_date|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="progress" style="height: 5px;">
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: {{ enrollment.progress_percentage }}%"
+                                         aria-valuenow="{{ enrollment.progress_percentage }}" 
+                                         aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <small class="text-muted">{{ enrollment.progress_percentage }}%</small>
+                            </td>
+                            <td>
+                                {% if enrollment.last_activity %}
+                                    <div>{{ enrollment.last_activity|date:"M d, Y" }}</div>
+                                    <small class="text-muted">{{ enrollment.last_activity|timesince }} ago</small>
+                                {% else %}
+                                    <span class="text-muted">No activity</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if enrollment.is_completed %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% else %}
+                                    <span class="badge bg-warning">In Progress</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" 
+                                            data-bs-toggle="modal" data-bs-target="#progressModal"
+                                            data-enrollment-id="{{ enrollment.id }}">
+                                        <i class="fas fa-chart-line"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                            onclick="resetProgress({{ enrollment.id }})">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="fas fa-users fa-2x mb-3"></i>
+                                    <p>No enrollments found</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if enrollments.has_other_pages %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if enrollments.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ enrollments.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in enrollments.paginator.page_range %}
+                        {% if enrollments.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if enrollments.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ enrollments.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Progress Modal -->
+<div class="modal fade" id="progressModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detailed Progress</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="progressDetails">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .user-progress .card {
+        border: none;
+        border-radius: 0.35rem;
+    }
+    .user-progress .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+    }
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: #4e73df;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    .course-thumbnail {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 0.35rem;
+    }
+    .progress {
+        background-color: #eaecf4;
+    }
+    .progress-bar {
+        background-color: #4e73df;
+    }
+    .pagination .page-link {
+        color: #4e73df;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Progress Modal
+    const progressModal = document.getElementById('progressModal');
+    progressModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const enrollmentId = button.getAttribute('data-enrollment-id');
+        const progressDetails = document.getElementById('progressDetails');
+        
+        // Load progress details
+        fetch(`/admin/enrollment/${enrollmentId}/progress/`)
+            .then(response => response.json())
+            .then(data => {
+                progressDetails.innerHTML = `
+                    <div class="progress-overview mb-4">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-muted mb-2">Overall Progress</h6>
+                                        <div class="h3 mb-0">${data.progress_percentage}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-muted mb-2">Completed Lessons</h6>
+                                        <div class="h3 mb-0">${data.completed_lessons}/${data.total_lessons}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-muted mb-2">Quiz Score</h6>
+                                        <div class="h3 mb-0">${data.average_quiz_score}%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="module-progress">
+                        ${data.modules.map(module => `
+                            <div class="module-item mb-4">
+                                <h6 class="mb-3">${module.title}</h6>
+                                ${module.lessons.map(lesson => `
+                                    <div class="lesson-item d-flex justify-content-between align-items-center p-2 border rounded mb-2">
+                                        <div>
+                                            <i class="fas fa-${lesson.type} me-2"></i>
+                                            ${lesson.title}
+                                        </div>
+                                        <div>
+                                            ${lesson.completed ? 
+                                                '<span class="badge bg-success">Completed</span>' :
+                                                '<span class="badge bg-warning">Pending</span>'
+                                            }
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+    });
+
+    // Reset Progress
+    window.resetProgress = function(enrollmentId) {
+        if (confirm('Are you sure you want to reset this user\'s progress? This action cannot be undone.')) {
+            fetch(`/admin/enrollment/${enrollmentId}/reset/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+            }).then(() => {
+                location.reload();
+            });
+        }
+    };
+
+    // Export Data
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        const queryString = new URLSearchParams(window.location.search).toString();
+        window.location.href = `/admin/user-progress/export/?${queryString}`;
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,1121 @@
+{% load static %}
+
+{% block title %}{{ course.title }} - Progress{% endblock %}
+
+{% block content %}
+<div class="course-progress-container">
+    <!-- Course Header -->
+    <header class="course-header">
+        <div class="container">
+            <div class="course-header-content">
+                <h1 class="course-title">{{ course.title }}</h1>
+                <div class="progress-section">
+                    <div class="progress-wrapper">
+                        <div class="progress-track">
+                            <div class="progress-fill" 
+                                 style="width: {{ progress_percentage }}%"
+                                 data-progress="{{ progress_percentage }}">
+                            </div>
+                        </div>
+                        <span class="progress-text">{{ progress_percentage|floatformat:1 }}% Complete</span>
+                    </div>
+                    <p class="lessons-summary">
+                        {{ completed_lessons_count }} of {{ total_lessons_count }} lessons completed
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Overview Cards -->
+    <section class="progress-overview">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card progress-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-title">Course Progress</h3>
+                        <div class="stat-value">{{ progress_percentage|floatformat:1 }}%</div>
+                        <div class="stat-details">
+                            <span>{{ completed_lessons_count }} lessons completed</span>
+                            <span>{{ total_lessons_count }} total lessons</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card activity-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-title">Last Activity</h3>
+                        {% if enrollment.last_accessed %}
+                            <div class="stat-value">{{ enrollment.last_accessed|date:"M j" }}</div>
+                            <div class="stat-details">
+                                <span>{{ enrollment.last_accessed|date:"F j, Y" }}</span>
+                                <span>{{ enrollment.last_accessed|time:"g:i A" }}</span>
+                            </div>
+                        {% else %}
+                            <div class="stat-value">--</div>
+                            <div class="stat-details">
+                                <span>No activity recorded</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="stat-card enrollment-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/>
+                            <line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-title">Enrollment Date</h3>
+                        <div class="stat-value">{{ enrollment.enrollment_date|date:"M j" }}</div>
+                        <div class="stat-details">
+                            <span>{{ enrollment.enrollment_date|date:"F j, Y" }}</span>
+                            <span>{{ enrollment.enrollment_date|time:"g:i A" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lessons Progress -->
+    <section class="lessons-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Lessons Progress</h2>
+            </div>
+            
+            <div class="lessons-container">
+                <!-- Mobile Cards View -->
+                <div class="lessons-mobile">
+                    {% for lesson_data in lessons_with_status %}
+                        <div class="lesson-card {% if lesson_data.is_completed %}completed{% endif %}">
+                            <div class="lesson-header">
+                                <div class="lesson-type">
+                                    {% if lesson_data.lesson.lesson_type == 'video' %}
+                                        <svg class="lesson-icon video" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <polygon points="23 7 16 12 23 17 23 7"/>
+                                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                                        </svg>
+                                        <span>Video</span>
+                                    {% else %}
+                                        <svg class="lesson-icon text" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14,2 14,8 20,8"/>
+                                            <line x1="16" y1="13" x2="8" y2="13"/>
+                                            <line x1="16" y1="17" x2="8" y2="17"/>
+                                            <polyline points="10,9 9,9 8,9"/>
+                                        </svg>
+                                        <span>Text</span>
+                                    {% endif %}
+                                </div>
+                                <div class="lesson-status">
+                                    {% if lesson_data.is_completed %}
+                                        <span class="status-badge completed">Completed</span>
+                                    {% else %}
+                                        <span class="status-badge not-started">Not Started</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <h3 class="lesson-title">
+                                <a href="{% url 'courses:lesson_detail' pk=lesson_data.lesson.pk %}">
+                                    {{ lesson_data.lesson.title }}
+                                </a>
+                            </h3>
+                            
+                            <div class="lesson-meta">
+                                {% if lesson_data.last_accessed %}
+                                    <span class="meta-item">
+                                        <span class="meta-label">Last accessed:</span>
+                                        <span class="meta-value">{{ lesson_data.last_accessed|date:"M d, Y" }}</span>
+                                    </span>
+                                {% endif %}
+                                {% if lesson_data.completed_date %}
+                                    <span class="meta-item">
+                                        <span class="meta-label">Completed:</span>
+                                        <span class="meta-value">{{ lesson_data.completed_date|date:"M d, Y" }}</span>
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="lesson-actions">
+                                <a href="{% url 'courses:lesson_detail' pk=lesson_data.lesson.pk %}" 
+                                   class="btn btn-primary">
+                                    {% if lesson_data.is_completed %}
+                                        Review Lesson
+                                    {% else %}
+                                        Continue Learning
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Desktop Table View -->
+                <div class="lessons-desktop">
+                    <div class="table-container">
+                        <table class="lessons-table">
+                            <thead>
+                                <tr>
+                                    <th>Lesson</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Last Accessed</th>
+                                    <th>Completed</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lesson_data in lessons_with_status %}
+                                    <tr class="lesson-row {% if lesson_data.is_completed %}completed{% endif %}">
+                                        <td class="lesson-cell">
+                                            <a href="{% url 'courses:lesson_detail' pk=lesson_data.lesson.pk %}" 
+                                               class="lesson-link">
+                                                {{ lesson_data.lesson.title }}
+                                            </a>
+                                        </td>
+                                        <td class="type-cell">
+                                            {% if lesson_data.lesson.lesson_type == 'video' %}
+                                                <div class="type-indicator video">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                        <polygon points="23 7 16 12 23 17 23 7"/>
+                                                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                                                    </svg>
+                                                    <span>Video</span>
+                                                </div>
+                                            {% else %}
+                                                <div class="type-indicator text">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                                        <polyline points="14,2 14,8 20,8"/>
+                                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                                        <polyline points="10,9 9,9 8,9"/>
+                                                    </svg>
+                                                    <span>Text</span>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="status-cell">
+                                            {% if lesson_data.is_completed %}
+                                                <span class="status-badge completed">Completed</span>
+                                            {% else %}
+                                                <span class="status-badge not-started">Not Started</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="date-cell">
+                                            {% if lesson_data.last_accessed %}
+                                                {{ lesson_data.last_accessed|date:"M d, Y" }}
+                                            {% else %}
+                                                <span class="no-data">--</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="date-cell">
+                                            {% if lesson_data.completed_date %}
+                                                {{ lesson_data.completed_date|date:"M d, Y" }}
+                                            {% else %}
+                                                <span class="no-data">--</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="action-cell">
+                                            <a href="{% url 'courses:lesson_detail' pk=lesson_data.lesson.pk %}" 
+                                               class="btn btn-primary btn-sm">
+                                                {% if lesson_data.is_completed %}
+                                                    Review
+                                                {% else %}
+                                                    Continue
+                                                {% endif %}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Attempts -->
+    <section class="quiz-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Quiz Attempts</h2>
+            </div>
+            
+            {% if quiz_attempts %}
+                <div class="quiz-container">
+                    <!-- Mobile Cards View -->
+                    <div class="quiz-mobile">
+                        {% for attempt in quiz_attempts %}
+                            <div class="quiz-card">
+                                <div class="quiz-header">
+                                    <h3 class="quiz-title">{{ attempt.quiz.title }}</h3>
+                                    <div class="quiz-score {% if attempt.passed %}passed{% else %}failed{% endif %}">
+                                        {{ attempt.score|floatformat:1 }}%
+                                    </div>
+                                </div>
+                                <div class="quiz-meta">
+                                    <div class="quiz-status">
+                                        {% if attempt.passed %}
+                                            <span class="status-badge passed">Passed</span>
+                                        {% else %}
+                                            <span class="status-badge failed">Failed</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="quiz-date">{{ attempt.completed_date|date:"M d, Y" }}</div>
+                                </div>
+                                <div class="quiz-actions">
+                                    <a href="{% url 'courses:quiz_detail' pk=attempt.quiz.pk %}" 
+                                       class="btn btn-outline">
+                                        Review Quiz
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Desktop Table View -->
+                    <div class="quiz-desktop">
+                        <div class="table-container">
+                            <table class="quiz-table">
+                                <thead>
+                                    <tr>
+                                        <th>Quiz</th>
+                                        <th>Score</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for attempt in quiz_attempts %}
+                                        <tr class="quiz-row">
+                                            <td class="quiz-cell">{{ attempt.quiz.title }}</td>
+                                            <td class="score-cell">
+                                                <span class="score-value {% if attempt.passed %}passed{% else %}failed{% endif %}">
+                                                    {{ attempt.score|floatformat:1 }}%
+                                                </span>
+                                            </td>
+                                            <td class="status-cell">
+                                                {% if attempt.passed %}
+                                                    <span class="status-badge passed">Passed</span>
+                                                {% else %}
+                                                    <span class="status-badge failed">Failed</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="date-cell">{{ attempt.completed_date|date:"M d, Y" }}</td>
+                                            <td class="action-cell">
+                                                <a href="{% url 'courses:quiz_detail' pk=attempt.quiz.pk %}" 
+                                                   class="btn btn-outline btn-sm">
+                                                    Review Quiz
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9 12l2 2 4-4"/>
+                            <path d="M21 12c.552 0 1-.448 1-1V5c0-.552-.448-1-1-1H3c-.552 0-1 .448-1 1v6c0 .552.448 1 1 1h9l4 4V12z"/>
+                        </svg>
+                    </div>
+                    <h3 class="empty-title">No Quiz Attempts Yet</h3>
+                    <p class="empty-description">Complete lessons to unlock quizzes and track your progress.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+
+{% block extra_css %}
+<style>
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+}
+
+.course-progress-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Course Header */
+.course-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2rem 0;
+    color: white;
+}
+
+.course-header-content {
+    text-align: center;
+}
+
+.course-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 2rem 0;
+    line-height: 1.2;
+}
+
+.progress-section {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.progress-track {
+    flex: 1;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ade80, #22c55e);
+    border-radius: 6px;
+    transition: width 1s ease-out;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.progress-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
+.lessons-summary {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+/* Progress Overview */
+.progress-overview {
+    padding: 3rem 0;
+    background: white;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.stat-icon svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+    stroke-width: 2;
+}
+
+.stat-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.5rem 0;
+}
+
+.stat-value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 0.5rem 0;
+    line-height: 1;
+}
+
+.stat-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat-details span {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Sections */
+.lessons-section,
+.quiz-section {
+    padding: 3rem 0;
+    background: #f8fafc;
+}
+
+.quiz-section {
+    background: white;
+}
+
+.section-header {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+/* Responsive Views */
+.lessons-mobile,
+.quiz-mobile {
+    display: block;
+}
+
+.lessons-desktop,
+.quiz-desktop {
+    display: none;
+}
+
+/* Mobile Cards */
+.lesson-card,
+.quiz-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.lesson-card:hover,
+.quiz-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.lesson-card.completed {
+    border-left: 4px solid #22c55e;
+}
+
+.lesson-header,
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.lesson-type,
+.type-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.lesson-icon,
+.type-indicator svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
+}
+
+.lesson-icon.video,
+.type-indicator.video {
+    color: #3b82f6;
+}
+
+.lesson-icon.text,
+.type-indicator.text {
+    color: #22c55e;
+}
+
+.lesson-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    line-height: 1.4;
+}
+
+.lesson-title a {
+    color: #111827;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.lesson-title a:hover {
+    color: #667eea;
+}
+
+.lesson-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.meta-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+}
+
+.meta-label {
+    color: #6b7280;
+}
+
+.meta-value {
+    color: #111827;
+    font-weight: 500;
+}
+
+.lesson-actions,
+.quiz-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Quiz Cards */
+.quiz-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0;
+    color: #111827;
+}
+
+.quiz-score {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.quiz-score.passed {
+    color: #22c55e;
+}
+
+.quiz-score.failed {
+    color: #ef4444;
+}
+
+.quiz-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.quiz-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.completed,
+.status-badge.passed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.not-started {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.status-badge.failed {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-outline:hover {
+    background: #667eea;
+    color: white;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1.5rem;
+    border-radius: 16px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-icon svg {
+    width: 32px;
+    height: 32px;
+    color: #6b7280;
+    stroke-width: 2;
+}
+
+.empty-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.5rem 0;
+}
+
+.empty-description {
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+    .course-title {
+        font-size: 3rem;
+    }
+    
+    .lessons-mobile,
+    .quiz-mobile {
+        display: none;
+    }
+    
+    .lessons-desktop,
+    .quiz-desktop {
+        display: block;
+    }
+    
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .lessons-table,
+    .quiz-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .lessons-table th,
+    .quiz-table th {
+        background: #f8fafc;
+        padding: 1rem 1.5rem;
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .lessons-table td,
+    .quiz-table td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+    }
+    
+    .lesson-row:hover,
+    .quiz-row:hover {
+        background: #f8fafc;
+    }
+    
+    .lesson-row.completed {
+        background: rgba(34, 197, 94, 0.05);
+    }
+    
+    .lesson-link {
+        color: #111827;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+    
+    .lesson-link:hover {
+        color: #667eea;
+    }
+    
+    .type-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .score-value {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+    
+    .score-value.passed {
+        color: #22c55e;
+    }
+    
+    .score-value.failed {
+        color: #ef4444;
+    }
+    
+    .no-data {
+        color: #9ca3af;
+        font-style: italic;
+    }
+    
+    .action-cell {
+        text-align: right;
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1024px) {
+    .container {
+        padding: 0 2rem;
+    }
+    
+    .course-header {
+        padding: 3rem 0;
+    }
+    
+    .progress-overview,
+    .lessons-section,
+    .quiz-section {
+        padding: 4rem 0;
+    }
+    
+    .stats-grid {
+        gap: 2.5rem;
+    }
+    
+    .stat-card {
+        padding: 2.5rem;
+    }
+}
+
+/* Animation for progress bar on load */
+@keyframes progressLoad {
+    from {
+        width: 0%;
+    }
+}
+
+.progress-fill {
+    animation: progressLoad 2s ease-out;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus styles for accessibility */
+.btn:focus,
+.lesson-link:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .course-progress-container {
+        background: white !important;
+    }
+    
+    .course-header {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .stat-card {
+        box-shadow: none !important;
+        border: 1px solid #e5e7eb !important;
+    }
+    
+    .btn {
+        display: none !important;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate progress bar on load
+    const progressFill = document.querySelector('.progress-fill');
+    if (progressFill) {
+        const targetWidth = progressFill.getAttribute('data-progress');
+        progressFill.style.width = '0%';
+        setTimeout(() => {
+            progressFill.style.width = targetWidth + '%';
+        }, 500);
+    }
+    
+    // Add loading states to buttons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (!this.classList.contains('btn-outline')) {
+                this.style.opacity = '0.7';
+                this.style.pointerEvents = 'none';
+                
+                // Reset after 2 seconds (in case navigation fails)
+                setTimeout(() => {
+                    this.style.opacity = '1';
+                    this.style.pointerEvents = 'auto';
+                }, 2000);
+            }
+        });
+    });
+    
+    // Intersection Observer for fade-in animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Observe cards and sections
+    const animatedElements = document.querySelectorAll('.stat-card, .lesson-card, .quiz-card, .section-header');
+    animatedElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+    
+    // Add ripple effect to buttons
+    function createRipple(event) {
+        const button = event.currentTarget;
+        const circle = document.createElement('span');
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+        
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+        circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+        circle.classList.add('ripple');
+        
+        const ripple = button.getElementsByClassName('ripple')[0];
+        if (ripple) {
+            ripple.remove();
+        }
+        
+        button.appendChild(circle);
+    }
+    
+    // Add ripple CSS
+    const rippleStyle = document.createElement('style');
+    rippleStyle.textContent = `
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(rippleStyle);
+    
+    // Apply ripple effect to primary buttons
+    const primaryButtons = document.querySelectorAll('.btn-primary');
+    primaryButtons.forEach(button => {
+        button.addEventListener('click', createRipple);
+    });
+    
+    // Smooth scroll for any anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add keyboard navigation for tables
+    const tables = document.querySelectorAll('.lessons-table, .quiz-table');
+    tables.forEach(table => {
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            row.setAttribute('tabindex', '0');
+            row.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    const link = row.querySelector('a');
+                    if (link) {
+                        e.preventDefault();
+                        link.click();
+                    }
+                } else if (e.key === 'ArrowDown' && index < rows.length - 1) {
+                    e.preventDefault();
+                    rows[index + 1].focus();
+                } else if (e.key === 'ArrowUp' && index > 0) {
+                    e.preventDefault();
+                    rows[index - 1].focus();
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{% if form.instance.pk %}Update{% else %}Add{% endif %} Blog or Event{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{% if form.instance.pk %}Update{% else %}Add{% endif %} Blog or Event</h1>
+    </div>
+
+    <!-- Content Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Content Details</h6>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Content Type Selection -->
+                <div class="form-group">
+                    <label class="font-weight-bold">Content Type</label>
+                    <div class="form-check form-check-inline">
+                        {% for radio in form.type %}
+                            <div class="custom-control custom-radio custom-control-inline">
+                                {{ radio.tag }}
+                                <label class="custom-control-label" for="{{ radio.id_for_label }}">
+                                    {{ radio.choice_label }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Blog Fields -->
+                <div id="blog-fields" class="form-group">
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}" class="font-weight-bold">Title</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.title.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.author.id_for_label }}" class="font-weight-bold">Author</label>
+                        {{ form.author }}
+                        {% if form.author.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.author.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.content.id_for_label }}" class="font-weight-bold">Content</label>
+                        {{ form.content }}
+                        {% if form.content.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.content.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Event Fields -->
+                <div id="event-fields" class="form-group">
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}" class="font-weight-bold">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.description.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.image.id_for_label }}" class="font-weight-bold">Image</label>
+                        {% if form.instance.image %}
+                            <div class="mb-2">
+                                <img src="{{ form.instance.image.url }}" alt="Current image" class="img-thumbnail" style="max-height: 200px;">
+                            </div>
+                        {% endif %}
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.image.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> {% if form.instance.pk %}Update{% else %}Create{% endif %}
+                    </button>
+                    <a href="{% url 'custom_admin:blog_event_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border-radius: 0.35rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    textarea.form-control {
+        min-height: 150px;
+    }
+    
+    .custom-control {
+        margin-right: 1.5rem;
+    }
+    
+    .invalid-feedback {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: #e74a3b;
+    }
+    
+    .btn {
+        margin-right: 0.5rem;
+    }
+    
+    .img-thumbnail {
+        border: 1px solid #ddd;
+        padding: 0.25rem;
+        background-color: #fff;
+    }
+</style>
+
+<script>
+    function toggleFields() {
+        const type = document.querySelector('input[name="type"]:checked');
+        if (!type) return;
+
+        const blogFields = document.getElementById('blog-fields');
+        const eventFields = document.getElementById('event-fields');
+
+        if (type.value === 'blog') {
+            blogFields.style.display = 'block';
+            eventFields.style.display = 'none';
+        } else if (type.value === 'event') {
+            blogFields.style.display = 'none';
+            eventFields.style.display = 'block';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleFields();
+        const radios = document.querySelectorAll('input[name="type"]');
+        radios.forEach(radio => {
+            radio.addEventListener('change', toggleFields);
+        });
+    });
+</script>
+{% endblock %}

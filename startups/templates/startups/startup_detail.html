@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ startup.name }} - Innovate and Elevate Academy{% endblock %}
+
+{% block content %}
+<section id="startup-detail" class="startup-detail">
+    <div class="startup-container">
+        <div class="startup-header">
+            <h2>{{ startup.name }}</h2>
+            <div class="startup-stats">
+                <span class="stat">
+                    <i class="fas fa-users"></i> {{ startup.team_size }} Team
+                </span>
+                <span class="stat">
+                    <i class="fas fa-chart-line"></i> ${{ startup.funding }} Funded
+                </span>
+            </div>
+        </div>
+        <div class="startup-logo">
+            <img src="{% static startup.logo.url %}" alt="{{ startup.name }}">
+        </div>
+        <div class="startup-description">
+            <p>{{ startup.description }}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

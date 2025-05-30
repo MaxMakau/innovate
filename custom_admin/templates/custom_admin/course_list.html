@@ -1,0 +1,121 @@
+{% extends "admin/base_admin.html" %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Course List</h1>
+        <a href="{% url 'custom_admin:course_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Course
+        </a>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        {% for status_value, status_label in status_choices %}
+                            <option value="{{ status_value }}" {% if current_status == status_value %}selected{% endif %}>
+                                {{ status_label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="level" class="form-label">Level</label>
+                    <select name="level" id="level" class="form-select">
+                        <option value="">All Levels</option>
+                        {% for level_value, level_label in level_choices %}
+                            <option value="{{ level_value }}" {% if current_level == level_value %}selected{% endif %}>
+                                {{ level_label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="sort" class="form-label">Sort By</label>
+                    <select name="sort" id="sort" class="form-select">
+                        <option value="-created_date" {% if current_sort == '-created_date' %}selected{% endif %}>Newest First</option>
+                        <option value="title" {% if current_sort == 'title' %}selected{% endif %}>Title</option>
+                        <option value="price" {% if current_sort == 'price' %}selected{% endif %}>Price</option>
+                        <option value="duration" {% if current_sort == 'duration' %}selected{% endif %}>Duration</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="search" class="form-label">Search</label>
+                    <input type="text" name="search" id="search" class="form-control" placeholder="Search courses..." value="{{ search_query }}">
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="{% url 'custom_admin:course_list' %}" class="btn btn-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Course List Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Duration</th>
+                            <th>Level</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in courses %}
+                            <tr>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.description|truncatechars:100 }}</td>
+                                <td>${{ course.price }}</td>
+                                <td>{{ course.duration }} weeks</td>
+                                <td>{{ course.get_level_display }}</td>
+                                <td>
+                                    <span class="badge {% if course.status == 'published' %}bg-success{% else %}bg-warning{% endif %}">
+                                        {{ course.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ course.created_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <a href="{% url 'custom_admin:course_detail' course_id=course.pk %}" 
+                                       class="btn btn-primary btn-sm">
+                                        <i class="fas fa-cog"></i> Manage
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">No courses available.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .badge {
+        font-size: 0.85em;
+    }
+</style>
+{% endblock %}
+{% endblock %}

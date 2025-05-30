@@ -1,0 +1,295 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="module-form">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
+        <a href="{% url 'custom_admin:course_detail' course_id=course.id %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Course
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate
+                  action="{% if module %}{% url 'custom_admin:module_update' module_id=module.id %}{% else %}{% url 'custom_admin:module_create' course_id=course.id %}{% endif %}">
+                {% csrf_token %}
+                
+                <!-- Module Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Module Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">Module Title</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.title.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.description.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lesson Information -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Lessons</h5>
+                        <button type="button" class="btn btn-success btn-sm" id="addLessonBtn">
+                            <i class="fas fa-plus"></i> Add New Lesson
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div id="lessonsContainer">
+                            {% if module and module.lessons.exists %}
+                                {% for lesson in module.lessons.all %}
+                                <div class="lesson-form mb-4">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="mb-3">
+                                                <label class="form-label">Lesson Title</label>
+                                                <input type="text" name="lesson_title[]" class="form-control" value="{{ lesson.title }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Description</label>
+                                                <textarea name="lesson_description[]" class="form-control" rows="2">{{ lesson.description }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Lesson Type</label>
+                                                <select name="lesson_type[]" class="form-select lesson-type-select" required>
+                                                    <option value="">Select Type</option>
+                                                    <option value="video" {% if lesson.lesson_type == 'video' %}selected{% endif %}>Video Lesson</option>
+                                                    <option value="text" {% if lesson.lesson_type == 'text' %}selected{% endif %}>Text Lesson</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Video Lesson Fields -->
+                                    <div class="video-fields" style="display: {% if lesson.lesson_type == 'video' %}block{% else %}none{% endif %};">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Video File</label>
+                                                    <input type="file" name="video_file[]" class="form-control" accept="video/*">
+                                                    {% if lesson.videolesson and lesson.videolesson.video_file %}
+                                                        <small class="text-muted">Current file: {{ lesson.videolesson.video_file.name }}</small>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Video URL</label>
+                                                    <input type="url" name="video_url[]" class="form-control" value="{{ lesson.videolesson.video_url|default:'' }}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Text Lesson Fields -->
+                                    <div class="text-fields" style="display: {% if lesson.lesson_type == 'text' %}block{% else %}none{% endif %};">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Content</label>
+                                                    <textarea name="text_content[]" class="form-control" rows="4">{{ lesson.textlesson.content|default:'' }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Document File</label>
+                                                    <input type="file" name="document_file[]" class="form-control">
+                                                    {% if lesson.textlesson and lesson.textlesson.document_file %}
+                                                        <small class="text-muted">Current file: {{ lesson.textlesson.document_file.name }}</small>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Template for new lesson -->
+                                <div class="lesson-form mb-4">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="mb-3">
+                                                <label class="form-label">Lesson Title</label>
+                                                <input type="text" name="lesson_title[]" class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Description</label>
+                                                <textarea name="lesson_description[]" class="form-control" rows="2"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Lesson Type</label>
+                                                <select name="lesson_type[]" class="form-select lesson-type-select" required>
+                                                    <option value="">Select Type</option>
+                                                    <option value="video">Video Lesson</option>
+                                                    <option value="text">Text Lesson</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Video Lesson Fields -->
+                                    <div class="video-fields" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Video File</label>
+                                                    <input type="file" name="video_file[]" class="form-control" accept="video/*">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Video URL</label>
+                                                    <input type="url" name="video_url[]" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Text Lesson Fields -->
+                                    <div class="text-fields" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Content</label>
+                                                    <textarea name="text_content[]" class="form-control" rows="4"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Document File</label>
+                                                    <input type="file" name="document_file[]" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a href="{% url 'custom_admin:course_detail' course_id=course.id %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> {% if module %}Update{% else %}Save{% endif %} Module and Lessons
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .module-form .form-control {
+        border-radius: 0.35rem;
+    }
+    .module-form .form-label {
+        font-weight: 500;
+        color: #5a5c69;
+    }
+    .card {
+        border: none;
+        border-radius: 0.35rem;
+    }
+    .lesson-form {
+        padding: 1rem;
+        border: 1px solid #e3e6f0;
+        border-radius: 0.35rem;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+    .lesson-form:last-child {
+        margin-bottom: 0;
+    }
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const lessonsContainer = document.getElementById('lessonsContainer');
+    const addLessonBtn = document.getElementById('addLessonBtn');
+    let lessonCount = document.querySelectorAll('.lesson-form').length;
+
+    // Function to create a new lesson form
+    function createLessonForm() {
+        const template = document.querySelector('.lesson-form').cloneNode(true);
+        
+        // Clear all input values
+        template.querySelectorAll('input, select, textarea').forEach(input => {
+            if (input.name) {
+                input.value = '';
+            }
+        });
+        
+        // Add remove button for additional lessons
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn btn-danger btn-sm position-absolute top-0 end-0 m-2';
+        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        removeBtn.onclick = function() {
+            template.remove();
+        };
+        template.appendChild(removeBtn);
+
+        lessonsContainer.appendChild(template);
+        lessonCount++;
+    }
+
+    // Add lesson button click handler
+    addLessonBtn.addEventListener('click', createLessonForm);
+
+    // Handle lesson type change
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('lesson-type-select')) {
+            const lessonForm = e.target.closest('.lesson-form');
+            const videoFields = lessonForm.querySelector('.video-fields');
+            const textFields = lessonForm.querySelector('.text-fields');
+            
+            if (e.target.value === 'video') {
+                videoFields.style.display = 'block';
+                textFields.style.display = 'none';
+            } else if (e.target.value === 'text') {
+                videoFields.style.display = 'none';
+                textFields.style.display = 'block';
+            } else {
+                videoFields.style.display = 'none';
+                textFields.style.display = 'none';
+            }
+        }
+    });
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

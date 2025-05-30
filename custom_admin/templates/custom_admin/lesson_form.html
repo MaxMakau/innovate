@@ -1,0 +1,203 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="lesson-form">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
+        <a href="{% url 'custom_admin:course_detail' lesson.module.course.id %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Course
+        </a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <div class="row">
+                    <!-- Basic Information -->
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Basic Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="{{ form.title.id_for_label }}" class="form-label">Lesson Title</label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.title.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                                    {{ form.description }}
+                                    {% if form.description.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.description.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="{{ form.order.id_for_label }}" class="form-label">Order</label>
+                                    {{ form.order }}
+                                    {% if form.order.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.order.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lesson Type -->
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Lesson Type</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="{{ form.lesson_type.id_for_label }}" class="form-label">Type</label>
+                                    {{ form.lesson_type }}
+                                    {% if form.lesson_type.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.lesson_type.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Lesson Fields -->
+                <div id="videoFields" class="card mb-4" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="mb-0">Video Content</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="{{ video_form.video_file.id_for_label }}" class="form-label">Video File</label>
+                            {{ video_form.video_file }}
+                            {% if video_form.video_file.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ video_form.video_file.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ video_form.video_url.id_for_label }}" class="form-label">Video URL</label>
+                            {{ video_form.video_url }}
+                            {% if video_form.video_url.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ video_form.video_url.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ video_form.duration_seconds.id_for_label }}" class="form-label">Duration (seconds)</label>
+                            {{ video_form.duration_seconds }}
+                            {% if video_form.duration_seconds.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ video_form.duration_seconds.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Lesson Fields -->
+                <div id="textFields" class="card mb-4" style="display: none;">
+                    <div class="card-header">
+                        <h5 class="mb-0">Text Content</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="{{ text_form.content.id_for_label }}" class="form-label">Content</label>
+                            {{ text_form.content }}
+                            {% if text_form.content.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ text_form.content.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ text_form.document_file.id_for_label }}" class="form-label">Document File</label>
+                            {{ text_form.document_file }}
+                            {% if text_form.document_file.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ text_form.document_file.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <a href="{% url 'custom_admin:course_detail' lesson.module.course.id %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Lesson
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .lesson-form .form-control {
+        border-radius: 0.35rem;
+    }
+    .lesson-form .form-label {
+        font-weight: 500;
+        color: #5a5c69;
+    }
+    .card {
+        border: none;
+        border-radius: 0.35rem;
+    }
+    .card-header {
+        background-color: #f8f9fc;
+        border-bottom: 1px solid #e3e6f0;
+    }
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const lessonTypeSelect = document.getElementById('{{ form.lesson_type.id_for_label }}');
+    const videoFields = document.getElementById('videoFields');
+    const textFields = document.getElementById('textFields');
+
+    function updateFields() {
+        const selectedType = lessonTypeSelect.value;
+        videoFields.style.display = selectedType === 'video' ? 'block' : 'none';
+        textFields.style.display = selectedType === 'text' ? 'block' : 'none';
+    }
+
+    lessonTypeSelect.addEventListener('change', updateFields);
+    updateFields(); // Initial state
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

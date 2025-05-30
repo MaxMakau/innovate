@@ -1,0 +1,44 @@
+INFO 2025-05-29 09:39:26,764 views 12460 15988 Processing module creation for course 3
+DEBUG 2025-05-29 09:39:26,765 views 12460 15988 POST data: <QueryDict: {'csrfmiddlewaretoken': ['5HPOkI00j2POKvaWvNml8zP6c6rnazH3LRqQfqnFzm2hzvhpjo7LdFfwMFpymgXh'], 'title': ['intro'], 'description': ['intro'], 'order': ['0'], 'lesson_title[]': ['intro 1'], 'lesson_description[]': [''], 'lesson_type[]': ['text'], 'lesson_order[]': ['1'], 'video_file[]': [''], 'video_url[]': [''], 'text_content[]': ['bla bla'], 'document_file[]': ['']}>
+DEBUG 2025-05-29 09:39:26,769 views 12460 15988 FILES data: <MultiValueDict: {}>
+ERROR 2025-05-29 09:39:26,813 views 12460 15988 Form validation failed: <ul class="errorlist"><li>course<ul class="errorlist"><li>This field is required.</li></ul></li></ul>
+ERROR 2025-05-29 09:39:26,816 views 12460 15988 Field 'course' errors: <ul class="errorlist"><li>This field is required.</li></ul>
+INFO 2025-05-29 09:43:18,737 views 6300 10736 Processing module creation for course 3
+DEBUG 2025-05-29 09:43:18,739 views 6300 10736 POST data: <QueryDict: {'csrfmiddlewaretoken': ['c60g9usgsIIedofqeRCFESd9MTFdiGpuSgBi4cPVI2VH2omT2sn5JYDzmsDounFI'], 'title': ['intro'], 'description': ['intro'], 'order': ['0'], 'lesson_title[]': ['intro 1'], 'lesson_description[]': ['test'], 'lesson_type[]': ['text'], 'lesson_order[]': ['1'], 'video_file[]': [''], 'video_url[]': [''], 'text_content[]': ['bla bla']}>
+DEBUG 2025-05-29 09:43:18,740 views 6300 10736 FILES data: <MultiValueDict: {'document_file[]': [<TemporaryUploadedFile: Java in Two Semesters Featuring JavaFX.pdf (application/pdf)>]}>
+INFO 2025-05-29 09:43:18,747 views 6300 10736 Module created successfully: intro
+DEBUG 2025-05-29 09:43:18,747 views 6300 10736 Lesson data received - Titles: ['intro 1'], Types: ['text'], Orders: ['1']
+INFO 2025-05-29 09:43:18,751 views 6300 10736 Lesson created: intro 1 (Type: text)
+DEBUG 2025-05-29 09:43:18,752 views 6300 10736 Text lesson data - Content length: 7, Document: Java in Two Semesters Featuring JavaFX.pdf
+INFO 2025-05-29 09:43:19,017 views 6300 10736 Text lesson content created for lesson: intro 1
+INFO 2025-05-29 09:49:24,805 views 14456 10288 Processing module creation for course 3
+DEBUG 2025-05-29 09:49:24,807 views 14456 10288 POST data: <QueryDict: {'csrfmiddlewaretoken': ['TCeHqtD9kbuPt6NVRCyEVe3mtzDpTf63zMPJlb0OAvHii6UoFdj40ktM38BA5Wmh'], 'title': ['video'], 'description': ['intro'], 'order': ['0'], 'lesson_title[]': ['abc'], 'lesson_description[]': ['test'], 'lesson_type[]': ['video'], 'lesson_order[]': ['1'], 'video_file[]': [''], 'video_url[]': ['https://www.youtube.com/watch?v=1VXw7QRBuCA&list=RDBiJ4JFOpo9M&index=25'], 'text_content[]': [''], 'document_file[]': ['']}>
+DEBUG 2025-05-29 09:49:24,809 views 14456 10288 FILES data: <MultiValueDict: {}>
+ERROR 2025-05-29 09:49:24,812 views 14456 10288 Transaction failed: UNIQUE constraint failed: courses_module.course_id, courses_module.order
+INFO 2025-05-29 10:04:30,718 views 2648 14760 Processing module creation for course 3
+DEBUG 2025-05-29 10:04:30,719 views 2648 14760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['PSleTqBJ7Feau1qNP2QL5Yg0ezDK4l81v2WgO8YonZrDj1xgDDBba4GqO8BVg2of'], 'title': ['topic 2'], 'description': ['continue'], 'order': ['0'], 'lesson_title[]': ['abce'], 'lesson_description[]': ['video'], 'lesson_type[]': ['video'], 'lesson_order[]': ['1'], 'video_file[]': [''], 'video_url[]': ['https://www.youtube.com/watch?v=1VXw7QRBuCA&list=RDBiJ4JFOpo9M&index=25'], 'text_content[]': [''], 'document_file[]': ['']}>
+DEBUG 2025-05-29 10:04:30,721 views 2648 14760 FILES data: <MultiValueDict: {}>
+INFO 2025-05-29 10:04:30,751 views 2648 14760 Module created successfully: topic 2
+DEBUG 2025-05-29 10:04:30,752 views 2648 14760 Lesson data received - Titles: ['abce'], Types: ['video']
+INFO 2025-05-29 10:04:30,758 views 2648 14760 Lesson created: abce (Type: video)
+DEBUG 2025-05-29 10:04:30,761 views 2648 14760 Video lesson data - File: None, URL: https://www.youtube.com/watch?v=1VXw7QRBuCA&list=RDBiJ4JFOpo9M&index=25
+INFO 2025-05-29 10:04:30,763 views 2648 14760 Video lesson content created for lesson: abce
+INFO 2025-05-29 11:19:50,982 views 3876 5520 Processing module creation for course 1
+DEBUG 2025-05-29 11:19:50,983 views 3876 5520 POST data: <QueryDict: {'csrfmiddlewaretoken': ['Hjhu6Agv4M4xv5hDygtP5EjrKXTvj19WntSw1iDak6h0k5o6mRefaKJRkwRGvIpa'], 'title': ['topic 2'], 'description': ['trial'], 'lesson_title[]': ['data types'], 'lesson_description[]': ['intro to datatypes'], 'lesson_type[]': ['text'], 'video_file[]': [''], 'video_url[]': [''], 'text_content[]': ['intro into datatypees'], 'document_file[]': ['']}>
+DEBUG 2025-05-29 11:19:50,985 views 3876 5520 FILES data: <MultiValueDict: {}>
+INFO 2025-05-29 11:19:51,021 views 3876 5520 Module created successfully: topic 2
+DEBUG 2025-05-29 11:19:51,025 views 3876 5520 Lesson data received - Titles: ['data types'], Types: ['text']
+INFO 2025-05-29 11:19:51,032 views 3876 5520 Lesson created: data types (Type: text)
+DEBUG 2025-05-29 11:19:51,033 views 3876 5520 Text lesson data - Content length: 21, Document: None
+INFO 2025-05-29 11:19:51,036 views 3876 5520 Text lesson content created for lesson: data types
+INFO 2025-05-29 11:48:31,053 views 17124 10920 Processing module update for module 1
+DEBUG 2025-05-29 11:48:31,055 views 17124 10920 POST data: <QueryDict: {'csrfmiddlewaretoken': ['v9dlmgypDH1Z3oZXJfAA547x1ZcMfb3EbjOnhYV4T1esSo6qxQl0aaxXByaXrSjS'], 'title': ['introduction'], 'description': ['intro'], 'lesson_title[]': ['intro', 'browser'], 'lesson_description[]': ['welcome', 'chrome'], 'lesson_type[]': ['text', 'video'], 'video_file[]': ['', ''], 'video_url[]': ['', 'https://www.youtube.com/watch?v=1VXw7QRBuCA&list=RDBiJ4JFOpo9M&index=25'], 'text_content[]': ['this is the start', ''], 'document_file[]': ['']}>
+DEBUG 2025-05-29 11:48:31,057 views 17124 10920 FILES data: <MultiValueDict: {'document_file[]': [<TemporaryUploadedFile: 1. wJavascript 2.pdf (application/pdf)>]}>
+INFO 2025-05-29 11:48:31,064 views 17124 10920 Module updated successfully: introduction
+DEBUG 2025-05-29 11:48:31,067 views 17124 10920 Lesson data received - Titles: ['intro', 'browser'], Types: ['text', 'video']
+INFO 2025-05-29 11:48:31,074 views 17124 10920 Lesson updated: intro (Type: text)
+DEBUG 2025-05-29 11:48:31,077 views 17124 10920 Text lesson data - Content length: 17, Document: 1. wJavascript 2.pdf
+INFO 2025-05-29 11:48:31,177 views 17124 10920 Text lesson content created for lesson: intro
+INFO 2025-05-29 11:48:31,179 views 17124 10920 Lesson updated: browser (Type: video)
+DEBUG 2025-05-29 11:48:31,182 views 17124 10920 Video lesson data - File: None, URL: https://www.youtube.com/watch?v=1VXw7QRBuCA&list=RDBiJ4JFOpo9M&index=25
+INFO 2025-05-29 11:48:31,190 views 17124 10920 Video lesson content created for lesson: browser
