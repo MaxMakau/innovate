@@ -1,583 +1,419 @@
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<html style="font-size: 18px;" lang="en"><head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ user.get_full_name }}'s Dashboard | Elevate Academy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #c97a04;
-            --accent-color: #f1c40f;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
-            --light-bg: #f5f6fa;
-            --white: #ffffff;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--light-bg);
-            color: var(--primary-color);
-            line-height: 1.6;
-        }
-
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .sidebar-logo img {
-            width: 50px;
-            margin-right: 10px;
-        }
-
-        .sidebar-nav {
-            list-style: none;
-        }
-
-        .sidebar-nav li {
-            margin-bottom: 15px;
-        }
-
-        .sidebar-nav a {
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-
-        .sidebar-nav a i {
-            margin-right: 10px;
-        }
-
-        .sidebar-nav a:hover, .sidebar-nav a.active {
-            background-color: var(--secondary-color);
-        }
-
-        /* Main Content Area */
-        .main-content {
-            background-color: var(--light-bg);
-            padding: 30px;
-            overflow-y: auto;
-        }
-
-        .welcome-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .welcome-message h1 {
-            font-size: 2rem;
-            color: var(--primary-color);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-profile img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        /* Enrolled Courses */
-        .enrolled-courses {
-            background-color: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .course-card {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            background-color: var(--light-bg);
-        }
-
-        .course-thumbnail {
-            width: 100px;
-            height: 70px;
-            border-radius: 8px;
-            margin-right: 20px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .course-details {
-            flex-grow: 1;
-        }
-
-        .course-progress {
-            width: 100%;
-            height: 10px;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background-color: var(--secondary-color);
-        }
-
-        .course-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .continue-btn {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            margin-left: 15px;
-            cursor: pointer;
-        }
-
-        /* Notifications */
-        .notifications {
-            background-color: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .notification-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 10px;
-            background-color: var(--light-bg);
-            border-radius: 8px;
-        }
-
-        .notification-icon {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 10px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        /* Account Settings */
-        .account-settings {
-            display: none;
-            background-color: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .settings-form {
-            display: grid;
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            margin-bottom: 8px;
-        }
-
-        .form-group input {
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-        }
-
-        .save-btn {
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* Responsive Design */
-        @media screen and (max-width: 768px) {
-            .dashboard-container {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: -250px;
-                height: 100%;
-                transition: left 0.3s;
-                z-index: 1000;
-            }
-
-            .sidebar.active {
-                left: 0;
-            }
-
-            .main-content {
-                padding: 15px;
-            }
-
-            .welcome-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
-
-        .progress-ring-circle {
-            transition: stroke-dashoffset 0.35s;
-            transform-origin: 50% 50%;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar-text {
-                opacity: 1;
-                transition: opacity 0.3s ease;
-            }
-
-            #sidebar.collapsed .sidebar-text {
-                opacity: 0;
-            }
-
-            #sidebar {
-                box-shadow: 2px 0 8px rgba(0,0,0,0.1);
-            }
-        }
-
-        /* Smooth transitions */
-        #sidebar {
-            transition: transform 0.3s ease-in-out;
-        }
-
-        #sidebar-overlay {
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        /* Active state for navigation items */
-        .nav-item.active {
-            background-color: var(--secondary-color);
-        }
-
-        /* Icon hover effects */
-        .nav-icon {
-            transition: transform 0.2s ease;
-        }
-
-        .nav-item:hover .nav-icon {
-            transform: scale(1.1);
-        }
-    </style>
-</head>
-<body class="bg-gray-50">
-    <div class="min-h-screen flex flex-col md:flex-row">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-gray-900 text-white">
-            <div class="p-6">
-                <div class="flex items-center space-x-3 mb-8">
-                    <h1 class="text-xl font-bold">Innovate & Elevate Leadership Academy</h1>
-                </div>
-
-                <nav class="space-y-4">
-                    <a href="{% url 'dashboard' %}" class="flex items-center space-x-3 p-3 rounded-lg bg-gray-800 text-white">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="{% url 'courses:course_list' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-book"></i>
-                        <span>Browse Courses</span>
-                    </a>
-                    <a href="{% url 'profile' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-user"></i>
-                        <span>My Profile</span>
-                    </a>
-                    <a href="#certificates" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-certificate"></i>
-                        <span>Certificates</span>
-                    </a>
-                    <a href="{% url 'logout' %}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 transition-colors text-red-400">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </a>
-                </nav>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Confirm Booking">
+    <meta name="description" content="">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static '/css/nicepage.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static '/css/Services.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static '/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script class="u-script" type="text/javascript" src="{% static '/js/jquery.js' %}" defer=""></script>
+    <script class="u-script" type="text/javascript" src="{% static '/js/nicepage.js' %}" defer=""></script>
+    <meta name="generator" content="Nicepage 7.7.3, nicepage.com">
+    <meta name="referrer" content="origin">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans:200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i|DM+Sans:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans:200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": "",
+		"logo": "images/logo-removebg-preview-Copy.png",
+		"sameAs": [
+				"https://facebook.com/name",
+				"https://twitter.com/name",
+				"https://instagram.com/name"
+		]
+}</script>
+    <meta name="theme-color" content="#243be6">
+    <meta name="twitter:site" content="@">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Courses">
+    <meta name="twitter:description" content="">
+    <meta property="og:title" content="Courses">
+    <meta property="og:type" content="website">
+  <meta data-intl-tel-input-cdn-path="intlTelInput/"></head>
+  <body data-path-to-root="./" data-include-products="false" class="u-body u-xxl-mode" data-lang="en"><header class="u-clearfix u-header u-header" id="sec-d7b6"><div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-xl u-sheet-1">
+        <a href="{% url 'services:homepage' %}" class="u-image u-logo u-image-1" data-image-width="574" data-image-height="95">
+          <img src="{% static '/images/logo-removebg-preview-Copy.png' %}" class="u-logo-image u-logo-image-1">
+        </a>
+        <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1" role="navigation" aria-label="Menu navigation">
+          <div class="menu-collapse" style="font-size: 0.888889rem; letter-spacing: 0px;">
+            <a class="u-button-style u-custom-active-border-color u-custom-active-color u-custom-border u-custom-border-color u-custom-borders u-custom-hover-border-color u-custom-hover-color u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-text-active-color u-custom-text-color u-custom-text-decoration u-custom-text-hover-color u-custom-top-bottom-menu-spacing u-hamburger-link u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#" tabindex="-1" aria-label="Open menu" aria-controls="261f">
+              <svg class="u-svg-link" viewBox="0 0 24 24"><use xlink:href="#menu-hamburger"></use></svg>
+              <svg class="u-svg-content" version="1.1" id="menu-hamburger" viewBox="0 0 16 16" x="0px" y="0px" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g><rect y="1" width="16" height="2"></rect><rect y="7" width="16" height="2"></rect><rect y="13" width="16" height="2"></rect>
+</g></svg>
+            </a>
+          </div>
+          <div class="u-custom-menu u-nav-container">
+            <ul class="u-nav u-spacing-30 u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="{% url 'services:homepage' %}" style="padding: 6px 0px;">Home</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="{% url 'courses:course_list' %}" style="padding: 6px 0px;">Courses</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="{% url 'startups:startups' %}" style="padding: 6px 0px;">Startups</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="About.html" style="padding: 6px 0px;">About Us</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="Services.html" style="padding: 6px 0px;">Our Services</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="blog/blog.html" style="padding: 6px 0px;">Blog</a>
+</li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="Team.html" style="padding: 6px 0px;">Our Team</a>
+</li></ul>
+          </div>
+          <div class="u-custom-menu u-nav-container-collapse" id="261f" role="region" aria-label="Menu panel">
+            <div class="u-black u-container-style u-inner-container-layout u-opacity u-opacity-var u-sidenav u-sidenav-1">
+              <div class="u-inner-container-layout u-sidenav-overflow">
+                <div class="u-menu-close" tabindex="-1" aria-label="Close menu"></div>
+                <ul class="u-align-center u-nav u-popupmenu-items u-unstyled u-nav-2"><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'services:homepage' %}">Home</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'courses:course_list' %}">Courses</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'startups:startups' %}">Startups</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="About.html">About Us</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="Services.html">Our Services</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="blog/blog.html">Blog</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="Team.html">Our Team</a>
+</li></ul>
+              </div>
             </div>
-        </aside>
+            <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
+          </div>
+        </nav>
+      </div></header>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto">
-            <!-- Top Navigation -->
-            <header class="bg-white shadow-sm">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div class="flex items-center justify-between">
-                        <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
-                            <i class="fas fa-bars text-xl"></i>
-                        </button>
-                        <h2 class="text-2xl font-bold text-gray-900">My Dashboard</h2>
-                        <div class="flex items-center space-x-4">
-                            <div class="relative">
-                                <button class="p-2 text-gray-400 hover:text-gray-500">
-                                    <i class="fas fa-bell"></i>
-                                    {% if notifications_count %}
-                                    <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
-                                    {% endif %}
-                                </button>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                {% if user.profile_picture %}
-                                    <img src="{{ user.profile_picture.url }}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
-                                {% else %}
-                                    <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                        <i class="fas fa-user text-gray-500"></i>
-                                    </div>
-                                {% endif %}
-                                <div class="text-sm">
-                                    <p class="font-medium text-gray-700">{{ user.get_full_name }}</p>
-                                    <p class="text-gray-500">{{ user.email }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
 
-            <!-- Dashboard Content -->
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <!-- Progress Overview -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Enrolled Courses</h3>
-                            <i class="fas fa-book text-blue-500"></i>
-                        </div>
-                        <p class="mt-2 text-3xl font-bold text-gray-700">{{ courses_progress|length }}</p>
-                    </div>
-                    
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Completed Courses</h3>
-                            <i class="fas fa-check-circle text-green-500"></i>
-                        </div>
-                        <p class="mt-2 text-3xl font-bold text-gray-700">
-                            {{ completed_courses }}
-                        </p>
-                    </div>
-                    
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-medium text-gray-900">Hours Learned</h3>
-                            <i class="fas fa-clock text-yellow-500"></i>
-                        </div>
-                        <p class="mt-2 text-3xl font-bold text-gray-700">
-                            {{ total_hours|default:0 }}h
-                        </p>
-                    </div>
-                </div>
+    <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span>Innovate & Elevate Leadership Academy</span>
+      </div>
+      <div class="user-profile">
+        <div class="avatar-container" id="avatarBtn">
+          {% if user.profile_picture %}
+            <img src="{{ user.profile_picture.url }}" alt="User Avatar" class="avatar">
+          {% else %}
+            <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User Avatar" class="avatar">
+          {% endif %}
+        </div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <h3>Update Profile</h3>
+          <input type="text" name="firstName" placeholder="First Name">
+          <input type="text" name="lastName" placeholder="Last Name">
+          <button class="update-btn">Update</button>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li class="active"><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="{% url 'courses:course_list' %}"><i class="fas fa-book"></i> Browse Courses</a></li>
+          <li><a href="{% url 'profile' %}"><i class="fas fa-user"></i> My Profile</a></li>
+          <li><a href="#"><i class="fas fa-star"></i> Personalized Courses</a></li>
+          <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </nav>
+    </aside>
 
-                <!-- Enrolled Courses -->
-                <div class="bg-white rounded-lg shadow mb-8">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-medium text-gray-900">My Courses</h3>
-                    </div>
-                    <div class="divide-y divide-gray-200">
-                        {% if courses_progress %}
-                            {% for course_data in courses_progress %}
-                            <div class="p-6 flex items-center">
-                                <div class="flex-shrink-0 h-20 w-20">
-                                    {% if course_data.enrollment.course.thumbnail %}
-                                        <img src="{{ course_data.enrollment.course.thumbnail.url }}" alt="{{ course_data.enrollment.course.title }}" class="h-20 w-20 rounded-lg object-cover">
-                                    {% else %}
-                                        <div class="h-20 w-20 rounded-lg bg-gray-200 flex items-center justify-center">
-                                            <i class="fas fa-book text-gray-400 text-2xl"></i>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div class="ml-6 flex-1">
-                                    <h4 class="text-lg font-medium text-gray-900">{{ course_data.enrollment.course.title }}</h4>
-                                    <div class="mt-2 flex items-center">
-                                        <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                            <div class="bg-green-500 h-2 rounded-full" style="width: {{ course_data.progress }}%"></div>
-                                        </div>
-                                        <span class="ml-4 text-sm text-gray-600">{{ course_data.progress|floatformat:0 }}%</span>
-                                    </div>
-                                    <div class="mt-2 flex items-center text-sm text-gray-500">
-                                        <span>{{ course_data.completed_lessons }} of {{ course_data.total_lessons }} lessons completed</span>
-                                    </div>
-                                </div>
-                                <div class="ml-6">
-                                    <a href="{% url 'courses:course_detail' course_data.enrollment.course.slug %}" 
-                                       class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-                                        Continue Learning
-                                    </a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="p-6 text-center">
-                                <div class="inline-block p-4 rounded-full bg-gray-100 mb-4">
-                                    <i class="fas fa-book text-gray-400 text-3xl"></i>
-                                </div>
-                                <h3 class="text-lg font-medium text-gray-900 mb-2">No courses yet</h3>
-                                <p class="text-gray-500 mb-4">Start your learning journey by enrolling in a course</p>
-                                <a href="{% url 'courses:course_list' %}" 
-                                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
-                                    Browse Courses
-                                </a>
-                            </div>
-                        {% endif %}
-                    </div>
-    </div>
-    
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-lg shadow">
-                    <div class="p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
-                    </div>
-                    <div class="divide-y divide-gray-200">
-                        {% if recent_activities %}
-                            {% for activity in recent_activities %}
-                            <div class="p-6 flex items-start space-x-4">
-                                <div class="flex-shrink-0">
-                                    <span class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                        <i class="fas fa-check text-blue-600"></i>
-                                    </span>
-                                </div>
-                                <div class="flex-1">
-                                    <p class="text-sm text-gray-600">{{ activity.message }}</p>
-                                    <p class="mt-1 text-xs text-gray-500">{{ activity.timestamp|timesince }} ago</p>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="p-6 text-center text-gray-500">
-                                No recent activity
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div class="menu-toggle">
+          <button id="hamburgerBtn" class="hamburger-btn">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <div class="user-info">
+          <span id="username">{{ user.get_full_name }}</span>
+          <span id="useremail">{{ user.email }}</span>
+        </div>
+      </header>
+
+      <!-- Dashboard Stats -->
+      <section class="dashboard-stats">
+        <div class="stats-cards">
+          <div class="card enrolled-courses">
+            <div class="card-icon">
+              <i class="fas fa-book-open"></i>
             </div>
-        </main>
-    </div>
+            <div class="card-content">
+              <h3>Enrolled Courses</h3>
+              <p class="card-value">{{ enrolled_courses|default:0 }}</p>
+            </div>
+          </div>
+
+          <div class="card completed-courses">
+            <div class="card-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="card-content">
+              <h3>Completed Courses</h3>
+              <p class="card-value">{{ completed_courses|default:0 }}</p>
+            </div>
+          </div>
+
+          <div class="card hours-learned">
+            <div class="card-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="card-content">
+              <h3>Hours Learned</h3>
+              <p class="card-value">{{ total_hours|default:0 }}</p>
+            </div>
+          </div>
+
+          <div class="card total-courses">
+            <div class="card-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="card-content">
+              <h3>Total Courses</h3>
+              <p class="card-value">{{ all_courses|default:0 }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- My Courses -->
+      <section class="my-courses-section">
+        <div class="section-header">
+          <h2>My Courses</h2>
+          <a class="view-all-btn" href="{% url 'courses:course_list' %}">View All</a>
+        </div>
+        <div class="courses-grid" id="coursesGrid">
+          {% for course in courses %}
+          <div class="course-card">
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-image">
+            <div class="course-info">
+              <h3>{{ course.title }}</h3>
+              <p>{{ course.short_description }}</p>
+              <a href="{% url 'courses:course_detail' course.id %}" class="continue-btn">Continue</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- In Progress -->
+      <section class="in-progress-section">
+        <div class="section-header">
+          <h2>In Progress</h2>
+          <a class="view-all-btn" href="{% url 'courses:course_list' %}">View All</a>
+        </div>
+        <div class="progress-courses" id="progressCourses">
+          {% for course in in_progress %}
+          <div class="course-progress-card">
+            <h4>{{ course.title }}</h4>
+            <div class="progress-bar-container">
+              <div class="progress-bar" style="width: {{ course.progress }}%"></div>
+            </div>
+            <p>{{ course.completed_lessons }} of {{ course.total_lessons }} lessons completed</p>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+  </div>
+
+
+ <footer class="u-align-center-sm u-align-center-xs u-black u-clearfix u-footer" id="sec-a832"><div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-sm u-sheet-1">
+        <div class="data-layout-selected u-clearfix u-expanded-width u-layout-wrap u-layout-wrap-1">
+          <div class="u-gutter-0 u-layout">
+            <div class="u-layout-row">
+              <div class="u-container-style u-layout-cell u-shape-rectangle u-size-26-lg u-size-26-xl u-size-26-xxl u-size-40-md u-size-40-sm u-size-40-xs u-layout-cell-1">
+                <div class="u-container-layout u-valign-top-lg u-valign-top-sm u-container-layout-1">
+                  <a href="" class="u-image u-logo u-image-1" data-image-width="574" data-image-height="131">
+                    <img src="{% static '/images/logo-removebg-preview.png' %}" class="u-logo-image u-logo-image-1">
+                  </a>
+                  <p class="u-align-left u-large-text u-text u-text-variant u-text-1"> We provide multiple solutions to help your business drive value, foster innovation, enhance performance</p>
+                  <p class="u-align-left-md u-align-left-sm u-align-left-xs u-align-right-lg u-align-right-xl u-align-right-xxl u-text u-text-default-lg u-text-default-md u-text-default-sm u-text-default-xl u-text-default-xxl u-text-2">Innovate and Elevate © 2025. All Rights Reserved.</p>
+                </div>
+              </div>
+              <div class="u-container-style u-layout-cell u-shape-rectangle u-size-18-lg u-size-18-xl u-size-18-xxl u-size-20-md u-size-20-sm u-size-20-xs u-layout-cell-2">
+                <div class="u-container-layout u-valign-top u-container-layout-2">
+                  <h5 class="u-align-left u-text u-text-3"> Help</h5>
+                  <div class="u-align-left u-border-1 u-border-grey-25 u-border-no-bottom u-border-no-left u-expanded-width u-line u-line-horizontal u-line-1"></div>
+                  <p class="u-align-left u-text u-text-4">
+                    <a href="#" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-1" title="#" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""> About Us</a>
+                    <a href="#" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-2" title="#" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">
+                      <br>Services
+                    </a>
+                    <br>
+                    <a href="#" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-3" title="#" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""> Contact Us<br>
+                    </a>
+                    <a href="#" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-4" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""> News &amp; Blog</a>
+                    <br>
+                  </p>
+                  <div class="u-social-icons u-social-icons-1">
+                    <a class="u-social-url" title="facebook" target="_blank" href="https://facebook.com/name"><span class="u-icon u-social-facebook u-social-icon u-text-white u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 112 112" style=""><use xlink:href="#svg-58df"></use></svg><svg class="u-svg-content" viewBox="0 0 112 112" x="0" y="0" id="svg-58df"><path fill="currentColor" d="M75.5,28.8H65.4c-1.5,0-4,0.9-4,4.3v9.4h13.9l-1.5,15.8H61.4v45.1H42.8V58.3h-8.8V42.4h8.8V32.2
+c0-7.4,3.4-18.8,18.8-18.8h13.8v15.4H75.5z"></path></svg></span>
+                    </a>
+                    <a class="u-social-url" title="twitter" target="_blank" href="https://twitter.com/name"><span class="u-icon u-social-icon u-social-twitter u-text-white u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 112.2 112.2" style=""><use xlink:href="#svg-e10a"></use></svg><svg class="u-svg-content" viewBox="0 0 112.2 112.2" x="0px" y="0px" id="svg-e10a"><path d="M67.1,49.1L98.6,16h-12L62,42L43.2,16H11l32.8,45.2L11,96h11.6l26.3-27.7L69.1,96H101L67.1,49.1z M55,61.9l-5.1-7L27.5,24.4
+	h11.4l17.3,23.8l5.1,7.1l23.4,32.2H73.8L55,61.9z"></path></svg></span>
+                    </a>
+                    <a class="u-social-url" title="instagram" target="_blank" href="https://instagram.com/name"><span class="u-icon u-social-icon u-social-instagram u-text-white u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 112 112" style=""><use xlink:href="#svg-3bdf"></use></svg><svg class="u-svg-content" viewBox="0 0 112 112" x="0" y="0" id="svg-3bdf"><path fill="currentColor" d="M55.9,32.9c-12.8,0-23.2,10.4-23.2,23.2s10.4,23.2,23.2,23.2s23.2-10.4,23.2-23.2S68.7,32.9,55.9,32.9z
+	 M55.9,69.4c-7.4,0-13.3-6-13.3-13.3c-0.1-7.4,6-13.3,13.3-13.3s13.3,6,13.3,13.3C69.3,63.5,63.3,69.4,55.9,69.4z"></path><path fill="currentColor" d="M78.2,11H33.5C21,11,10.8,21.3,10.8,33.7v44.7c0,12.6,10.2,22.8,22.7,22.8h44.7c12.6,0,22.7-10.2,22.7-22.7
+	V33.7C100.8,21.1,90.6,11,78.2,11z M91,78.4c0,7.1-5.8,12.8-12.8,12.8H33.5c-7.1,0-12.8-5.8-12.8-12.8V33.7
+	c0-7.1,5.8-12.8,12.8-12.8h44.7c7.1,0,12.8,5.8,12.8,12.8V78.4z"></path></svg></span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="u-container-style u-layout-cell u-shape-rectangle u-size-16-lg u-size-16-xl u-size-16-xxl u-size-60-md u-size-60-sm u-size-60-xs u-layout-cell-3">
+                <div class="u-container-layout u-valign-top u-container-layout-3">
+                  <h5 class="u-align-left u-text u-text-5"> Get In Touch</h5>
+                  <div class="u-align-left u-border-1 u-border-grey-25 u-border-no-bottom u-border-no-left u-expanded-width u-line u-line-horizontal u-line-2" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
+                  <p class="u-align-left u-text u-text-5"><span class="u-file-icon u-icon u-text-white u-icon-4"><img src="{% static '/images/1-b26c8bb7.png' %}" alt=""></span>&nbsp;​​​​14 E 12th St,New York, NY 10007, United States
+                  </p>
+                  <p class="u-align-left u-text u-text-default u-text-6"><span class="u-file-icon u-icon u-text-white u-icon-5"><img src="{% static '/images/2-a85e65c4.png' %}" alt=""></span>&nbsp; <a href="mailto:hi@car.repair.com" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-5" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">hi@company.com</a>
+                  </p>
+                  <p class="u-align-left u-text u-text-7">
+                    <a href="tel:+12345678910" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-6" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""><span class="u-file-icon u-icon u-text-white u-icon-6"><img src="{% static '/images/3-c91f3b92.png' %}" alt=""></span>&nbsp;​+1 (234) 567-8910
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="u-align-center u-border-1 u-border-grey-75 u-expanded-width u-line u-line-horizontal u-line-3"></div>
+      </div></footer>
+
+
+<script>
+
+// DOM elements
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const sidebar = document.getElementById('sidebar');
+const avatarBtn = document.getElementById('avatarBtn');
+const profileDropdown = document.getElementById('profileDropdown');
+const username = document.getElementById('username');
+const useremail = document.getElementById('useremail');
+const coursesGrid = document.getElementById('coursesGrid');
+const progressCourses = document.getElementById('progressCourses');
+
+// Create overlay element for mobile menu
+const overlay = document.createElement('div');
+overlay.className = 'overlay';
+document.body.appendChild(overlay);
+
+// Mobile menu toggle functionality
+hamburgerBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('show');
+    overlay.classList.toggle('show');
+});
+
+// Close sidebar when clicking outside
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('show');
+    overlay.classList.remove('show');
+    profileDropdown.style.display = 'none';
+});
+
+// Avatar dropdown toggle
+avatarBtn.addEventListener('click', () => {
+    profileDropdown.style.display = 
+        profileDropdown.style.display === 'block' ? 'none' : 'block';
+});
+
+// Close profile dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!profileDropdown.contains(e.target) && !avatarBtn.contains(e.target)) {
+        profileDropdown.style.display = 'none';
+    }
+});
+
+// User data (simulated)
+
+// Update user profile functionality
+const updateBtn = document.querySelector('.update-btn');
+const firstNameInput = document.querySelector('input[name="firstName"]');
+const lastNameInput = document.querySelector('input[name="lastName"]');
+
+
+updateBtn.addEventListener('click', () => {
+    const firstName = firstNameInput.value.trim();
+    const lastName = lastNameInput.value.trim();
     
-    <script>
-        // Mobile menu functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.getElementById('sidebar');
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const closeSidebarButton = document.getElementById('close-sidebar');
-            const sidebarOverlay = document.getElementById('sidebar-overlay');
+    if (firstName && lastName) {
+        userData.name = `${firstName} ${lastName}`;
+        username.textContent = userData.name;
+        profileDropdown.style.display = 'none';
+        
+        // Reset input fields
+        firstNameInput.value = '';
+        lastNameInput.value = '';
+        
+        // Show success feedback
+        showNotification('Profile updated successfully');
+    } else {
+        showNotification('Please fill in all fields', 'error');
+    }
+});
 
-            function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
-                sidebarOverlay.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
+// Sample courses data
 
-            function closeSidebar() {
-                sidebar.classList.add('-translate-x-full');
-                sidebarOverlay.classList.add('hidden');
-                document.body.style.overflow = '';
-            }
 
-            // Toggle sidebar on menu button click
-            mobileMenuButton.addEventListener('click', openSidebar);
+// Helper function to determine color based on progress
 
-            // Close sidebar when close button is clicked
-            closeSidebarButton.addEventListener('click', closeSidebar);
 
-            // Close sidebar when overlay is clicked
-            sidebarOverlay.addEventListener('click', closeSidebar);
+// Show notification
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    // Style the notification
+    Object.assign(notification.style, {
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        padding: '12px 20px',
+        borderRadius: '4px',
+        color: 'white',
+        backgroundColor: type === 'success' ? '#2ecc71' : '#e74c3c',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+        zIndex: '1000',
+        transition: 'all 0.3s ease',
+        opacity: '0',
+        transform: 'translateY(20px)'
+    });
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateY(0)';
+    }, 10);
+    
+    // Animate out and remove
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
 
-            // Close sidebar when window is resized to larger screen
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) { // md breakpoint
-                    closeSidebar();
-                }
-            });
-
-            // Handle clicks on sidebar links for mobile
-            const sidebarLinks = sidebar.querySelectorAll('a');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (window.innerWidth < 768) {
-                        closeSidebar();
-                    }
-                });
-            });
+// Add hover effects to cards
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize the dashboard
+    username.textContent = userData.name;
+    useremail.textContent = userData.email;
+    
+    renderCourses();
+    renderProgressCourses();
+    
+    // Navigation active state
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            navLinks.forEach(l => l.parentElement.classList.remove('active'));
+            link.parentElement.classList.add('active');
         });
+    });
+});
 
-        // Progress Ring Animation
-        function createProgressRing(percent, radius, stroke) {
-            const normalizedRadius = radius - stroke * 2;
-            const circumference = normalizedRadius * 2 * Math.PI;
-            const strokeDashoffset = circumference - (percent / 100) * circumference;
-            
-            return {
-                normalizedRadius,
-                circumference,
-                strokeDashoffset
-            };
-        }
+</script>
 
-        // Initialize progress rings
-        document.addEventListener('DOMContentLoaded', function() {
-            const rings = document.querySelectorAll('.progress-ring-circle');
-            rings.forEach(ring => {
-                const percent = ring.getAttribute('data-percent');
-                const radius = ring.getAttribute('r');
-                const stroke = ring.getAttribute('stroke-width');
-                const { circumference, strokeDashoffset } = createProgressRing(percent, radius, stroke);
-                
-                ring.style.strokeDasharray = `${circumference} ${circumference}`;
-                ring.style.strokeDashoffset = strokeDashoffset;
-            });
-        });
-    </script>
-</body>
-</html>
+</body></html>   
+{% endblock %}  
