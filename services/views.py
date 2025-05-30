@@ -3,10 +3,10 @@ from services.models import BlogSection, UpcomingEvent,Achievement
 from startups.models import Startup  # Updated import
 
 def homepage(request):
-    startups = list(Startup.objects.all()
+    startups = Startup.objects.all()
     achievements = Achievement.objects.all()
-    latest_blog = list(BlogSection.objects.all()
-    upcoming_events = list(UpcomingEvent.objects.all()
+    latest_blog = BlogSection.objects.all()
+    upcoming_events = UpcomingEvent.objects.all()
     context = {
         'latest_blog': latest_blog,
         'upcoming_events': upcoming_events,
