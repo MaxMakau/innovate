@@ -37,7 +37,7 @@ pricing plans, ​Optimize your business growth, ​It’s different working wit
     <meta property="og:type" content="website">
   <meta data-intl-tel-input-cdn-path="intlTelInput/"></head>
   <body data-home-page="Home.html" data-home-page-title="Home" data-path-to-root="./" data-include-products="false" class="u-body u-xxl-mode" data-lang="en"><header class="u-clearfix u-header u-header" id="sec-d7b6"><div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-xl u-valign-middle-xxl u-sheet-1">
-        <a href="#" class="u-image u-logo u-image-1" data-image-width="574" data-image-height="95">
+        <a href="{% url 'services:homepage' %}" class="u-image u-logo u-image-1" data-image-width="574" data-image-height="95">
           <img src="{% static '/images/logo-removebg-preview-Copy.png' %}" class="u-logo-image u-logo-image-1">
         </a>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1" role="navigation" aria-label="Menu navigation">
@@ -56,6 +56,9 @@ pricing plans, ​Optimize your business growth, ​It’s different working wit
 </li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="#block-1" style="padding: 6px 0px;">Our Services</a>
 </li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="#block-2" style="padding: 6px 0px;">Blog</a>
 </li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="#block-5" style="padding: 6px 0px;">Our Team</a>
+<li class="u-nav-item">
+    <a href="{% url 'login' %}" class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" style="padding: 6px 15px; background-color: #f39c12; color: white !important; border-radius: 4px; margin: 0 5px;">Sign Up</a>
+</li>
 </li></ul>
           </div>
           <div class="u-custom-menu u-nav-container-collapse" id="261f" role="region" aria-label="Menu panel">
@@ -96,7 +99,7 @@ pricing plans, ​Optimize your business growth, ​It’s different working wit
                   <div class="custom-expanded u-align-center u-border-2 u-border-grey-75 u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-container-align-center-xxl u-container-style u-grey-5 u-group u-opacity u-opacity-75 u-radius u-shape-round u-group-1">
                     <div class="u-container-layout u-valign-bottom-lg u-valign-bottom-sm u-valign-bottom-xl u-container-layout-3">
                       <p class="u-align-center u-small-text u-text u-text-variant u-text-6"> We offer comprehensive training aligned with all 17 Sustainable Development Goals (SDGs), ensuring our graduates are ready to take on leadership roles that create lasting change.</p>
-                      <a href="" class="u-active-black u-align-left u-btn u-button-style u-custom-color-1 u-hover-black u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Get Started</a>
+                      <a href="{% url 'login' %}" class="u-active-black u-align-left u-btn u-button-style u-custom-color-1 u-hover-black u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Get Started</a>
                     </div>
                   </div>
                 </div>
@@ -275,52 +278,35 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
     </section>
     <section class="u-clearfix u-section-5" id="block-2">
       <div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-md u-valign-middle-xl u-valign-middle-xs u-valign-middle-xxl u-sheet-1">
-        <h4 class="u-align-center u-text u-text-default u-text-1">Blogs</h4><!--blog--><!--blog_options_json--><!--{"type":"Recent","source":"","tags":"","count":""}--><!--/blog_options_json-->
-        <div class="u-blog u-expanded-width u-blog-1" data-site-sorting-prop="created" data-site-sorting-order="desc" data-blog-id="blog-1">
+        <h4 class="u-align-center u-text u-text-default u-text-1">Blogs</h4>
+        <div class="u-blog u-expanded-width u-blog-1">
           <div class="u-list-control"></div>
-          <div class="u-repeater u-repeater-1"><!--blog_post-->
-            <div class="u-align-center u-blog-post u-container-align-center u-container-style u-grey-5 u-repeater-item u-repeater-item-1">
+          <div class="u-repeater u-repeater-1">
+            {% for post in latest_blog %}
+            <div class="u-align-center u-blog-post u-container-align-center u-container-style u-grey-5 u-repeater-item">
               <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-container-layout-1">
-                <a class="u-post-header-link" href="blog/take-control-of-your-financial-life.html"><!--blog_post_image-->
-                  <img alt="" class="u-blog-control u-expanded-width u-image u-image-default u-image-1" src="{% static '/images/IMG-20250428-WA0012.jpg' %}" data-image-width="1000" data-image-height="899"><!--/blog_post_image-->
-                </a><!--blog_post_header-->
+                <a class="u-post-header-link" href="#">
+                  <img alt="{{ post.title }}" class="u-blog-control u-expanded-width u-image u-image-default u-image-1" src="{{ post.image.url }}" data-image-width="1000" data-image-height="899">
+                </a>
                 <h2 class="u-blog-control u-subtitle u-text u-text-2">
-                  <a class="u-post-header-link" href="blog/take-control-of-your-financial-life.html">Take Control of Your Financial Life</a>
-                </h2><!--/blog_post_header--><!--blog_post_metadata-->
-                <div class="u-blog-control u-metadata u-text-grey-50 u-metadata-1"><!--blog_post_metadata_date--><span class="u-meta-date u-meta-icon">Jan 22, 2025</span><!--/blog_post_metadata_date--><!--blog_post_metadata_comments--><span class="u-meta-comments u-meta-icon"><!--blog_post_metadata_comments_content-->Comments (0)<!--/blog_post_metadata_comments_content--></span><!--/blog_post_metadata_comments-->
-                </div><!--/blog_post_metadata--><!--blog_post_readmore-->
-                <a href="blog/take-control-of-your-financial-life.html" class="u-blog-control u-border-none u-btn u-button-style u-palette-3-base u-text-black u-btn-1"><!--blog_post_readmore_content--><!--options_json--><!--{"content":"","defaultValue":"Read More"}--><!--/options_json-->Read More<!--/blog_post_readmore_content--></a><!--/blog_post_readmore-->
+                  <a class="u-post-header-link" href="#">{{ post.title }}</a>
+                  
+                </h2>
+                <p>{{ post.content }}</p>
+                <div class="u-blog-control u-metadata u-text-grey-50 u-metadata-1">
+                  <span class="u-meta-date u-meta-icon">{{ post.created_date|date:"M d, Y" }}</span>
+                </div>
+                <a href="#" class="u-blog-control u-border-none u-btn u-button-style u-palette-3-base u-text-black u-btn-1">Read More</a>
               </div>
-            </div><div class="u-align-center u-blog-post u-container-align-center u-container-style u-grey-5 u-repeater-item u-video-cover">
-              <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-container-layout-2">
-                <a class="u-post-header-link" href="blog/how-to-find-a-financial-advisor-you-can-trust.html"><!--blog_post_image-->
-                  <img alt="" class="u-blog-control u-expanded-width u-image u-image-default u-image-2" src="{% static '/images/IMG-20250428-WA0014.jpg' %}" data-image-width="1026" data-image-height="720"><!--/blog_post_image-->
-                </a><!--blog_post_header-->
-                <h2 class="u-blog-control u-subtitle u-text u-text-3">
-                  <a class="u-post-header-link" href="blog/how-to-find-a-financial-advisor-you-can-trust.html">How to find a financial advisor you can trust</a>
-                </h2><!--/blog_post_header--><!--blog_post_metadata-->
-                <div class="u-blog-control u-metadata u-text-grey-50 u-metadata-2"><!--blog_post_metadata_date--><span class="u-meta-date u-meta-icon">Jan 22, 2025</span><!--/blog_post_metadata_date--><!--blog_post_metadata_comments--><span class="u-meta-comments u-meta-icon"><!--blog_post_metadata_comments_content-->Comments (0)<!--/blog_post_metadata_comments_content--></span><!--/blog_post_metadata_comments-->
-                </div><!--/blog_post_metadata--><!--blog_post_readmore-->
-                <a href="blog/how-to-find-a-financial-advisor-you-can-trust.html" class="u-blog-control u-border-none u-btn u-button-style u-palette-3-base u-text-black u-btn-2"><!--blog_post_readmore_content--><!--options_json--><!--{"content":"","defaultValue":"Read More"}--><!--/options_json-->Read More<!--/blog_post_readmore_content--></a><!--/blog_post_readmore-->
-              </div>
-            </div><div class="u-align-center u-blog-post u-container-align-center u-container-style u-grey-5 u-repeater-item u-video-cover">
-              <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-container-layout-3">
-                <a class="u-post-header-link" href="blog/planning-for-retirement-with-active-investing.html"><!--blog_post_image-->
-                  <img alt="" class="u-blog-control u-expanded-width u-image u-image-default u-image-3" src="{% static '/images/IMG-20250428-WA0004.jpg' %}" data-image-width="1080" data-image-height="1080"><!--/blog_post_image-->
-                </a><!--blog_post_header-->
-                <h2 class="u-blog-control u-subtitle u-text u-text-4">
-                  <a class="u-post-header-link" href="blog/planning-for-retirement-with-active-investing.html">Planning for Retirement with Active Investing </a>
-                </h2><!--/blog_post_header--><!--blog_post_metadata-->
-                <div class="u-blog-control u-metadata u-text-grey-50 u-metadata-3"><!--blog_post_metadata_date--><span class="u-meta-date u-meta-icon">Jan 22, 2025</span><!--/blog_post_metadata_date--><!--blog_post_metadata_comments--><span class="u-meta-comments u-meta-icon"><!--blog_post_metadata_comments_content-->Comments (0)<!--/blog_post_metadata_comments_content--></span><!--/blog_post_metadata_comments-->
-                </div><!--/blog_post_metadata--><!--blog_post_readmore-->
-                <a href="blog/planning-for-retirement-with-active-investing.html" class="u-blog-control u-border-none u-btn u-button-style u-palette-3-base u-text-black u-btn-3"><!--blog_post_readmore_content--><!--options_json--><!--{"content":"","defaultValue":"Read More"}--><!--/options_json-->Read More<!--/blog_post_readmore_content--></a><!--/blog_post_readmore-->
-              </div>
-            </div><!--/blog_post--><!--blog_post-->
-            <!--/blog_post--><!--blog_post-->
-            <!--/blog_post-->
+            </div>
+            {% empty %}
+            <div class="u-align-center u-container-style u-grey-5">
+              <p>No blog posts available.</p>
+            </div>
+            {% endfor %}
           </div>
           <div class="u-list-control"></div>
-        </div><!--/blog-->
+        </div>
       </div>
     </section>
     <section class="u-clearfix u-container-align-center-lg u-container-align-center-xl u-container-align-center-xxl u-section-6" id="sec-3811">
@@ -358,92 +344,75 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
         </div>
       </div>
     </section>
-    <section class="u-align-center u-clearfix u-container-align-center u-container-align-center-lg u-container-align-center-xl u-container-align-center-xxl u-section-7" id="block-4">
-      <div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-sm u-valign-middle-xl u-sheet-1">
-        <h4 class="u-align-center u-text u-text-default u-text-1">Upcoming Events</h4>
-        <div class="u-expanded-width u-layout-horizontal u-list u-list-1">
-          <div class="u-repeater u-repeater-1">
-            <div class="u-align-left u-container-align-left u-container-style u-list-item u-repeater-item">
-              <div class="u-container-layout u-similar-container u-valign-top u-container-layout-1">
-                <img class="u-expanded-width u-image u-image-default u-image-1" alt="" data-image-width="1044" data-image-height="696" src="{% static '/images/IMG-20250428-WA0001.jpg' %}">
-                <p class="u-align-left u-large-text u-text u-text-variant u-text-2">Sample Headline</p>
-                <p class="u-align-left u-small-text u-text u-text-variant u-text-3">Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
+
+
+    <!-- Add this section for Upcoming Events -->
+<section class="u-clearfix u-section-7" id="events">
+  <div class="u-clearfix u-sheet u-sheet-1">
+    <h4 class="u-align-center u-text u-text-default u-text-1">Upcoming Events</h4>
+    <div class="u-expanded-width u-list u-list-1">
+      <div class="u-repeater u-repeater-1">
+        {% for event in upcoming_events|slice:":3" %}
+        <div class="u-align-center u-container-style u-list-item u-repeater-item">
+          <div class="u-container-layout u-similar-container u-valign-top u-container-layout-1">
+            {% if event.image %}
+              <img class="u-expanded-width u-image u-image-default u-image-1" src="{{ event.image.url }}" alt="{{ event.description|truncatewords:5 }}" data-image-width="1200" data-image-height="800">
+            {% else %}
+              <div class="u-expanded-width u-image u-image-default u-image-1" style="background-color: #f5f5f5; height: 200px; display: flex; align-items: center; justify-content: center;">
+                <span>Event Image</span>
               </div>
-            </div>
-            <div class="u-align-left u-container-align-left u-container-style u-list-item u-repeater-item">
-              <div class="u-container-layout u-similar-container u-valign-top u-container-layout-2">
-                <img class="u-expanded-width u-image u-image-default u-image-2" alt="" data-image-width="1044" data-image-height="696" src="{% static '/images/IMG-20250428-WA0001.jpg' %}">
-                <p class="u-align-left u-large-text u-text u-text-variant u-text-4">Sample Headline</p>
-                <p class="u-align-left u-small-text u-text u-text-variant u-text-5">Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
-              </div>
-            </div>
-            <div class="u-align-left u-container-align-left u-container-style u-list-item u-repeater-item">
-              <div class="u-container-layout u-similar-container u-valign-top u-container-layout-3">
-                <img class="u-expanded-width u-image u-image-default u-image-3" alt="" data-image-width="1044" data-image-height="696" src="{% static '/images/IMG-20250428-WA0001.jpg' %}">
-                <p class="u-align-left u-large-text u-text u-text-variant u-text-6">Sample Headline</p>
-                <p class="u-align-left u-small-text u-text u-text-variant u-text-7">Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
-              </div>
-            </div>
-            <div class="u-align-left u-container-align-left u-container-style u-list-item u-repeater-item">
-              <div class="u-container-layout u-similar-container u-valign-top u-container-layout-4">
-                <img class="u-expanded-width u-image u-image-default u-image-4" alt="" data-image-width="1044" data-image-height="696" src="{% static '/images/IMG-20250428-WA0001.jpg' %}">
-                <p class="u-align-left u-large-text u-text u-text-variant u-text-8">Sample Headline</p>
-                <p class="u-align-left u-small-text u-text u-text-variant u-text-9">Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
-              </div>
-            </div>
-          </div>
-          <a class="u-absolute-vcenter-lg u-absolute-vcenter-xl u-absolute-vcenter-xxl u-gallery-nav u-gallery-nav-prev u-grey-70 u-icon-circle u-opacity u-opacity-70 u-spacing-10 u-text-white u-gallery-nav-1" href="#" role="button"><span aria-hidden="true">
-              <svg viewBox="0 0 451.847 451.847"><path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0
-c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744
-c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"></path></svg></span><span class="sr-only">
-              <svg viewBox="0 0 451.847 451.847"><path d="M97.141,225.92c0-8.095,3.091-16.192,9.259-22.366L300.689,9.27c12.359-12.359,32.397-12.359,44.751,0
-c12.354,12.354,12.354,32.388,0,44.748L173.525,225.92l171.903,171.909c12.354,12.354,12.354,32.391,0,44.744
-c-12.354,12.365-32.386,12.365-44.745,0l-194.29-194.281C100.226,242.115,97.141,234.018,97.141,225.92z"></path></svg></span>
-          </a>
-          <a class="u-absolute-vcenter-lg u-absolute-vcenter-xl u-absolute-vcenter-xxl u-gallery-nav u-gallery-nav-next u-grey-70 u-icon-circle u-opacity u-opacity-70 u-spacing-10 u-text-white u-gallery-nav-2" href="#" role="button"><span aria-hidden="true">
-              <svg viewBox="0 0 451.846 451.847"><path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744
-L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284
-c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"></path></svg></span><span class="sr-only">
-              <svg viewBox="0 0 451.846 451.847"><path d="M345.441,248.292L151.154,442.573c-12.359,12.365-32.397,12.365-44.75,0c-12.354-12.354-12.354-32.391,0-44.744
-L278.318,225.92L106.409,54.017c-12.354-12.359-12.354-32.394,0-44.748c12.354-12.359,32.391-12.359,44.75,0l194.287,194.284
-c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,248.292z"></path></svg></span>
-          </a>
-        </div>
-      </div>
-    </section>
-    <section class="u-clearfix u-container-align-center u-section-8" id="block-3">
-      <div class="u-clearfix u-sheet u-valign-bottom-xxl u-valign-middle-lg u-valign-middle-md u-valign-middle-sm u-valign-middle-xs u-sheet-1">
-        <h4 class="u-align-center u-text u-text-default u-text-1">Startups</h4>
-        <div class="u-expanded-width u-list u-list-1">
-          <div class="u-repeater u-repeater-1">
-            <div class="u-container-align-left u-container-style u-list-item u-repeater-item">
-              <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-valign-top-xs u-container-layout-1">
-                <img alt="" class="u-expanded-width u-image u-image-default u-image-1" data-image-width="1280" data-image-height="853" src="{% static '/images/IMG-20250428-WA0008.jpg' %}">
-                <p class="u-align-left u-large-text u-text u-text-default u-text-variant u-text-2">Sample Headline</p>
-                <p class="u-align-left u-small-text u-text u-text-variant u-text-3">Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
-                <a href="" class="u-active-none u-align-left u-border-2 u-border-hover-palette-2-base u-border-no-left u-border-no-right u-border-no-top u-border-palette-2-light-1 u-btn u-button-style u-hover-none u-none u-text-body-color u-btn-1">learn more</a>
-              </div>
-            </div>
-            <div class="u-container-align-left u-container-style u-list-item u-repeater-item">
-              <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-valign-top-xs u-container-layout-2">
-                <img alt="" class="u-expanded-width u-image u-image-default u-image-2" data-image-width="1280" data-image-height="853" src="{% static '/images/IMG-20250428-WA0009.jpg' %}">
-                <p class="u-align-left u-large-text u-text u-text-default u-text-variant u-text-4">Sample Headline</p>
-                <p class="u-align-left u-small-text u-text u-text-variant u-text-5">Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
-                <a href="" class="u-active-none u-align-left u-border-2 u-border-hover-palette-2-base u-border-no-left u-border-no-right u-border-no-top u-border-palette-2-light-1 u-btn u-button-style u-hover-none u-none u-text-body-color u-btn-2">learn more</a>
-              </div>
-            </div>
-            <div class="u-container-align-left u-container-style u-list-item u-repeater-item">
-              <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-valign-top-xs u-container-layout-3">
-                <img alt="" class="u-expanded-width u-image u-image-default u-image-3" data-image-width="1600" data-image-height="1066" src="{% static '/images/IMG-20250428-WA0010.jpg' %}">
-                <p class="u-align-left u-large-text u-text u-text-default u-text-variant u-text-6">Sample Headline</p>
-                <p class="u-align-left u-small-text u-text u-text-variant u-text-7">Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
-                <a href="" class="u-active-none u-align-left u-border-2 u-border-hover-palette-2-base u-border-no-left u-border-no-right u-border-no-top u-border-palette-2-light-1 u-btn u-button-style u-hover-none u-none u-text-body-color u-btn-3">learn more</a>
-              </div>
-            </div>
+            {% endif %}
+            <h5 class="u-text u-text-2">{{ event.description|truncatewords:10 }}</h5>
+            <p class="u-text u-text-3">{{ event.created_date|date:"F d, Y" }}</p>
           </div>
         </div>
+        {% empty %}
+        <div class="u-align-center u-container-style u-list-item u-repeater-item">
+          <p>No upcoming events scheduled. Check back soon for updates!</p>
+        </div>
+        {% endfor %}
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
+    <!-- Add this section for Startups -->
+<section class="u-clearfix u-section-6" id="startups" style="padding-bottom: 5px; margin-bottom: 40px; position: relative; z-index: 1;">
+  <div class="u-clearfix u-sheet u-sheet-1">
+    <h4 class="u-align-center u-text u-text-default u-text-1">Featured Startups</h4>
+    <div class="u-expanded-width u-gallery u-layout-grid u-lightbox u-show-text-on-hover u-gallery-1" style="padding: 10px;">
+      <div class="u-gallery-inner u-gallery-inner-1" style="grid-template-columns: repeat(3, 1fr);">
+        {% for startup in startups|slice:":3" %}
+        <div class="u-effect-fade u-gallery-item" style="padding: 10px;">
+          <div class="u-back-slide" style="padding-top: 75%; position: relative; overflow: hidden;">
+            {% if startup.image %}
+              <img class="u-back-image" 
+                   src="{{ startup.image.url }}" 
+                   alt="{{ startup.name }}"
+                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+              <img class="u-back-image" 
+                   src="{% static 'images/default-startup.jpg' %}" 
+                   alt="Default Startup Image"
+                   style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+            {% endif %}
+          </div>
+          <div class="u-over-slide u-shading u-over-slide-1" style="padding: 20px;">
+            <h3 class="u-gallery-heading" style="font-size: 1.2rem; margin-bottom: 10px;">{{ startup.name }}</h3>
+            <p class="u-gallery-text" style="font-size: 0.9rem; margin: 0;">{{ startup.description|truncatewords:15 }}</p>
+          </div>
+        </div>
+        {% empty %}
+        <div class="u-align-center u-container-style u-gallery-item u-shape-rectangle">
+          <p>No featured startups available at the moment.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+
     <section class="u-clearfix u-section-9" id="block-5">
       <div class="u-clearfix u-sheet u-valign-middle-lg u-valign-middle-sm u-valign-middle-xs u-valign-middle-xxl u-sheet-1">
         <h4 class="u-align-center u-text u-text-default u-text-1"><span class="u-text-custom-color-1">Our</span> Team
@@ -584,36 +553,36 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
                 <div class="u-social-icons u-social-icons-1">
                   <a class="u-social-url" title="facebook" target="_blank" href="https://facebook.com/name"><span class="u-icon u-social-facebook u-social-icon u-text-white u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 112 112" style=""><use xlink:href="#svg-58df"></use></svg><svg class="u-svg-content" viewBox="0 0 112 112" x="0" y="0" id="svg-58df"><path fill="currentColor" d="M75.5,28.8H65.4c-1.5,0-4,0.9-4,4.3v9.4h13.9l-1.5,15.8H61.4v45.1H42.8V58.3h-8.8V42.4h8.8V32.2
 c0-7.4,3.4-18.8,18.8-18.8h13.8v15.4H75.5z"></path></svg></span>
-                  </a>
-                  <a class="u-social-url" title="twitter" target="_blank" href="https://twitter.com/name"><span class="u-icon u-social-icon u-social-twitter u-text-white u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 112.2 112.2" style=""><use xlink:href="#svg-e10a"></use></svg><svg class="u-svg-content" viewBox="0 0 112.2 112.2" x="0px" y="0px" id="svg-e10a"><path d="M67.1,49.1L98.6,16h-12L62,42L43.2,16H11l32.8,45.2L11,96h11.6l26.3-27.7L69.1,96H101L67.1,49.1z M55,61.9l-5.1-7L27.5,24.4
-h11.4l17.3,23.8l5.1,7.1l23.4,32.2H73.8L55,61.9z"></path></svg></span>
-                  </a>
-                  <a class="u-social-url" title="instagram" target="_blank" href="https://instagram.com/name"><span class="u-icon u-social-icon u-social-instagram u-text-white u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 112 112" style=""><use xlink:href="#svg-3bdf"></use></svg><svg class="u-svg-content" viewBox="0 0 112 112" x="0" y="0" id="svg-3bdf"><path fill="currentColor" d="M55.9,32.9c-12.8,0-23.2,10.4-23.2,23.2s10.4,23.2,23.2,23.2s23.2-10.4,23.2-23.2S68.7,32.9,55.9,32.9z
- M55.9,69.4c-7.4,0-13.3-6-13.3-13.3c-0.1-7.4,6-13.3,13.3-13.3s13.3,6,13.3,13.3C69.3,63.5,63.3,69.4,55.9,69.4z"></path><path fill="currentColor" d="M78.2,11H33.5C21,11,10.8,21.3,10.8,33.7v44.7c0,12.6,10.2,22.8,22.7,22.8h44.7c12.6,0,22.7-10.2,22.7-22.7
-V33.7C100.8,21.1,90.6,11,78.2,11z M91,78.4c0,7.1-5.8,12.8-12.8,12.8H33.5c-7.1,0-12.8-5.8-12.8-12.8V33.7
-c0-7.1,5.8-12.8,12.8-12.8h44.7c7.1,0,12.8,5.8,12.8,12.8V78.4z"></path></svg></span>
-                  </a>
+                    </a>
+                    <a class="u-social-url" title="twitter" target="_blank" href="https://twitter.com/name"><span class="u-icon u-social-icon u-social-twitter u-text-white u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 112.2 112.2" style=""><use xlink:href="#svg-e10a"></use></svg><svg class="u-svg-content" viewBox="0 0 112.2 112.2" x="0px" y="0px" id="svg-e10a"><path d="M67.1,49.1L98.6,16h-12L62,42L43.2,16H11l32.8,45.2L11,96h11.6l26.3-27.7L69.1,96H101L67.1,49.1z M55,61.9l-5.1-7L27.5,24.4
+	h11.4l17.3,23.8l5.1,7.1l23.4,32.2H73.8L55,61.9z"></path></svg></span>
+                    </a>
+                    <a class="u-social-url" title="instagram" target="_blank" href="https://instagram.com/name"><span class="u-icon u-social-icon u-social-instagram u-text-white u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 112 112" style=""><use xlink:href="#svg-3bdf"></use></svg><svg class="u-svg-content" viewBox="0 0 112 112" x="0" y="0" id="svg-3bdf"><path fill="currentColor" d="M55.9,32.9c-12.8,0-23.2,10.4-23.2,23.2s10.4,23.2,23.2,23.2s23.2-10.4,23.2-23.2S68.7,32.9,55.9,32.9z
+	 M55.9,69.4c-7.4,0-13.3-6-13.3-13.3c-0.1-7.4,6-13.3,13.3-13.3s13.3,6,13.3,13.3C69.3,63.5,63.3,69.4,55.9,69.4z"></path><path fill="currentColor" d="M78.2,11H33.5C21,11,10.8,21.3,10.8,33.7v44.7c0,12.6,10.2,22.8,22.7,22.8h44.7c12.6,0,22.7-10.2,22.7-22.7
+	V33.7C100.8,21.1,90.6,11,78.2,11z M91,78.4c0,7.1-5.8,12.8-12.8,12.8H33.5c-7.1,0-12.8-5.8-12.8-12.8V33.7
+	c0-7.1,5.8-12.8,12.8-12.8h44.7c7.1,0,12.8,5.8,12.8,12.8V78.4z"></path></svg></span>
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="u-container-style u-layout-cell u-shape-rectangle u-size-16-lg u-size-16-xl u-size-16-xxl u-size-60-md u-size-60-sm u-size-60-xs u-layout-cell-3">
-              <div class="u-container-layout u-valign-top u-container-layout-3">
-                <h5 class="u-align-left u-text u-text-5"> Get In Touch</h5>
-                <div class="u-align-left u-border-1 u-border-grey-25 u-border-no-bottom u-border-no-left u-expanded-width u-line u-line-horizontal u-line-2" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
-                <p class="u-align-left u-text u-text-6"><span class="u-file-icon u-icon u-text-white u-icon-4"><img src="{% static '/images/1-b26c8bb7.png' %}" alt=""></span>&nbsp;​​​​14 E 12th St,New York, NY 10007, United States
-                </p>
-                <p class="u-align-left u-text u-text-default u-text-7"><span class="u-file-icon u-icon u-text-white u-icon-5"><img src="{% static '/images/2-a85e65c4.png' %}" alt=""></span>&nbsp; <a href="mailto:hi@car.repair.com" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-5" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">hi@company.com</a>
-                </p>
-                <p class="u-align-left u-text u-text-8">
-                  <a href="tel:+12345678910" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-6" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""><span class="u-file-icon u-icon u-text-white u-icon-6"><img src="{% static '/images/3-c91f3b92.png' %}" alt=""></span>&nbsp;​+1 (234) 567-8910
-                  </a>
-                </p>
+              <div class="u-container-style u-layout-cell u-shape-rectangle u-size-16-lg u-size-16-xl u-size-16-xxl u-size-60-md u-size-60-sm u-size-60-xs u-layout-cell-3">
+                <div class="u-container-layout u-valign-top u-container-layout-3">
+                  <h5 class="u-align-left u-text u-text-5"> Get In Touch</h5>
+                  <div class="u-align-left u-border-1 u-border-grey-25 u-border-no-bottom u-border-no-left u-expanded-width u-line u-line-horizontal u-line-2" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""></div>
+                  <p class="u-align-left u-text u-text-6"><span class="u-file-icon u-icon u-text-white u-icon-4"><img src="{% static '/images/1-b26c8bb7.png' %}" alt=""></span>&nbsp;​​​​14 E 12th St,New York, NY 10007, United States
+                  </p>
+                  <p class="u-align-left u-text u-text-default u-text-7"><span class="u-file-icon u-icon u-text-white u-icon-5"><img src="{% static '/images/2-a85e65c4.png' %}" alt=""></span>&nbsp; <a href="mailto:hi@car.repair.com" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-5" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">hi@company.com</a>
+                  </p>
+                  <p class="u-align-left u-text u-text-8">
+                    <a href="tel:+12345678910" class="u-active-none u-border-1 u-border-active-white u-border-hover-white u-border-no-left u-border-no-right u-border-no-top u-btn u-button-link u-button-style u-hover-none u-none u-text-active-grey-10 u-text-body-alt-color u-text-hover-grey-10 u-btn-6" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction=""><span class="u-file-icon u-icon u-text-white u-icon-6"><img src="{% static '/images/3-c91f3b92.png' %}" alt=""></span>&nbsp;​+1 (234) 567-8910
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="u-align-center u-border-1 u-border-grey-75 u-expanded-width u-line u-line-horizontal u-line-3"></div>
-    </div></footer>
+        <div class="u-align-center u-border-1 u-border-grey-75 u-expanded-width u-line u-line-horizontal u-line-3"></div>
+      </div></footer>
 </body></html>
 {% endblock %}
