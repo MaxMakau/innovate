@@ -282,7 +282,7 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
         <div class="u-blog u-expanded-width u-blog-1">
           <div class="u-list-control"></div>
           <div class="u-repeater u-repeater-1">
-            {% for post in latest_blog|slice:":3" %}
+            {% for post in latest_blog %}
             <div class="u-align-center u-blog-post u-container-align-center u-container-style u-grey-5 u-repeater-item">
               <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-container-layout-1">
                 <a class="u-post-header-link" href="#">
@@ -352,7 +352,7 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
     <h4 class="u-align-center u-text u-text-default u-text-1">Upcoming Events</h4>
     <div class="u-expanded-width u-list u-list-1">
       <div class="u-repeater u-repeater-1">
-        {% for event in upcoming_events|slice:":3" %}
+        {% for event in upcoming_events %}
         <div class="u-align-center u-container-style u-list-item u-repeater-item">
           <div class="u-container-layout u-similar-container u-valign-top u-container-layout-1">
             
@@ -378,7 +378,7 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
     <h4 class="u-align-center u-text u-text-default u-text-1">Featured Startups</h4>
     <div class="u-expanded-width u-gallery u-layout-grid u-lightbox u-show-text-on-hover u-gallery-1" style="padding: 10px;">
       <div class="u-gallery-inner u-gallery-inner-1" style="grid-template-columns: repeat(3, 1fr);">
-        {% for startup in startups|slice:":3" %}
+        {% for startup in startups %}
         <div class="u-effect-fade u-gallery-item" style="padding: 10px;">
           <div class="u-back-slide" style="padding-top: 75%; position: relative; overflow: hidden;">
             {% if startup.image %}
