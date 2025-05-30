@@ -12,3 +12,5 @@ django-countries==7.5.1
 python-dotenv==1.0.0
 django-storages==1.14.2
 boto3==1.29.3
+uvicorn
+dj-database-url
