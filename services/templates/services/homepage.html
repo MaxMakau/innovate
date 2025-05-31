@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <meta name="keywords" content="​Just Taking Care of Your Business, ​Your results are our top priority!, ​We help private businesses grow, ​Our main goal is advance, ​Cut your costs by up to 50%, Why Us?, ​Our flexible
-pricing plans, ​Optimize your business growth, ​It’s different working with us">
+pricing plans, ​Optimize your business growth, ​It's different working with us">
     <meta name="description" content="">
     <title>Home</title>
     <link rel="stylesheet" href="{% static '/css/nicepage.css' %}" media="screen">
@@ -57,7 +57,11 @@ pricing plans, ​Optimize your business growth, ​It’s different working wit
 </li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="#block-2" style="padding: 6px 0px;">Blog</a>
 </li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="#block-5" style="padding: 6px 0px;">Our Team</a>
 <li class="u-nav-item">
+    {% if user.is_authenticated %}
+    <a href="{% url 'dashboard' %}" class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" style="padding: 6px 15px; background-color: #f39c12; color: white !important; border-radius: 4px; margin: 0 5px;">{{ user.first_name }}, Dashboard</a>
+    {% else %}
     <a href="{% url 'login' %}" class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" style="padding: 6px 15px; background-color: #f39c12; color: white !important; border-radius: 4px; margin: 0 5px;">Sign Up</a>
+    {% endif %}
 </li>
 </li></ul>
           </div>
@@ -292,7 +296,7 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
                   <a class="u-post-header-link" href="#">{{ post.title }}</a>
                   
                 </h2>
-                <p>{{ post.content }}</p>
+                <p>{{ post.content|truncatewords:20 }}</p>
                 <div class="u-blog-control u-metadata u-text-grey-50 u-metadata-1">
                   <span class="u-meta-date u-meta-icon">{{ post.created_date|date:"M d, Y" }}</span>
                 </div>
@@ -373,13 +377,13 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
 </section>
 
     <!-- Add this section for Startups -->
-<section class="u-clearfix u-section-6" id="startups" style="padding-bottom: 5px; margin-bottom: 40px; position: relative; z-index: 1;">
+<section class="u-clearfix u-section-6" id="startups" style="padding: 60px 0; background-color: #f8f9fa;">
   <div class="u-clearfix u-sheet u-sheet-1">
-    <h4 class="u-align-center u-text u-text-default u-text-1">Featured Startups</h4>
+    <h4 class="u-align-center u-text u-text-default u-text-1 mb-5">Featured Startups</h4>
     <div class="u-expanded-width u-gallery u-layout-grid u-lightbox u-show-text-on-hover u-gallery-1" style="padding: 10px;">
-      <div class="u-gallery-inner u-gallery-inner-1" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="u-gallery-inner u-gallery-inner-1" style="grid-template-columns: repeat(3, 1fr); gap: 30px;">
         {% for startup in startups|slice:":3" %}
-        <div class="u-effect-fade u-gallery-item" style="padding: 10px;">
+        <div class="u-effect-fade u-gallery-item" style="padding: 0; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease;">
           <div class="u-back-slide" style="padding-top: 75%; position: relative; overflow: hidden;">
             {% if startup.image %}
               <img class="u-back-image" 
@@ -393,16 +397,30 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
             {% endif %}
           </div>
-          <div class="u-over-slide u-shading u-over-slide-1" style="padding: 20px;">
-            <h3 class="u-gallery-heading" style="font-size: 1.2rem; margin-bottom: 10px;">{{ startup.name }}</h3>
-            <p class="u-gallery-text" style="font-size: 0.9rem; margin: 0;">{{ startup.description|truncatewords:15 }}</p>
+          <div class="u-over-slide u-shading u-over-slide-1" style="padding: 25px; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7));">
+            <h3 class="u-gallery-heading" style="font-size: 1.4rem; margin-bottom: 15px; color: white;">{{ startup.name }}</h3>
+            <div class="startup-stats" style="display: flex; gap: 15px; margin-bottom: 15px;">
+              <span style="color: #f39c12;"><i class="fas fa-users"></i> {{ startup.team_size }}</span>
+              <span style="color: #f39c12;"><i class="fas fa-globe"></i> {{ startup.country }}</span>
+            </div>
+            <p class="u-gallery-text" style="font-size: 1rem; margin-bottom: 20px; color: #fff;">{{ startup.description|truncatewords:15 }}</p>
+            <a href="{% url 'startups:startup_detail' startup.id %}" class="u-btn u-button-style u-custom-color-1" 
+               style="display: inline-block; padding: 10px 25px; border-radius: 5px; text-decoration: none; color: white; background-color: #f39c12; transition: background-color 0.3s ease;">
+              Learn More <i class="fas fa-arrow-right ms-2"></i>
+            </a>
           </div>
         </div>
         {% empty %}
-        <div class="u-align-center u-container-style u-gallery-item u-shape-rectangle">
-          <p>No featured startups available at the moment.</p>
+        <div class="u-align-center u-container-style u-gallery-item u-shape-rectangle" style="grid-column: 1 / -1;">
+          <p style="font-size: 1.2rem; color: #666;">No featured startups available at the moment.</p>
         </div>
         {% endfor %}
+      </div>
+      <div class="text-center mt-5">
+        <a href="{% url 'startups:startups' %}" class="u-btn u-button-style u-custom-color-1" 
+           style="display: inline-block; padding: 12px 30px; border-radius: 5px; text-decoration: none; color: white; background-color: #f39c12; transition: background-color 0.3s ease;">
+          View All Startups <i class="fas fa-arrow-right ms-2"></i>
+        </a>
       </div>
     </div>
   </div>

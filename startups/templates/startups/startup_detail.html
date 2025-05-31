@@ -1,28 +1,171 @@
-{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ startup.name }} - Innovate and Elevate Academy{% endblock %}
-
 {% block content %}
-<section id="startup-detail" class="startup-detail">
-    <div class="startup-container">
-        <div class="startup-header">
-            <h2>{{ startup.name }}</h2>
-            <div class="startup-stats">
-                <span class="stat">
-                    <i class="fas fa-users"></i> {{ startup.team_size }} Team
-                </span>
-                <span class="stat">
-                    <i class="fas fa-chart-line"></i> ${{ startup.funding }} Funded
-                </span>
-            </div>
-        </div>
-        <div class="startup-logo">
-            <img src="{% static startup.logo.url %}" alt="{{ startup.name }}">
-        </div>
-        <div class="startup-description">
-            <p>{{ startup.description }}</p>
+<!DOCTYPE html>
+<html style="font-size: 18px;" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>{{ startup.name }} - Innovate and Elevate Academy</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .startup-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('{{ startup.image.url }}');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 50px;
+        }
+        .startup-stats {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: -50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            border-right: 1px solid #eee;
+        }
+        .stat-item:last-child {
+            border-right: none;
+        }
+        .stat-item i {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-bottom: 10px;
+        }
+        .stat-item h4 {
+            font-size: 1.5rem;
+            margin: 10px 0;
+            color: #333;
+        }
+        .stat-item p {
+            color: #666;
+            margin: 0;
+        }
+        .startup-content {
+            padding: 50px 0;
+        }
+        .industry-tags {
+            margin: 20px 0;
+        }
+        .industry-tag {
+            display: inline-block;
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            color: #666;
+        }
+        .back-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #f39c12;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        .back-button:hover {
+            transform: translateY(-3px);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Keep your existing header here -->
+    <header class="u-clearfix u-header u-header" id="sec-d7b6">
+        <!-- ... existing header code ... -->
+    </header>
+
+    <div class="startup-header text-center">
+        <div class="container">
+            <h1 class="display-4 mb-4">{{ startup.name }}</h1>
+            <p class="lead">{{ startup.description|truncatewords:30 }}</p>
         </div>
     </div>
-</section>
+
+    <div class="container">
+        <div class="startup-stats">
+            <div class="row">
+                <div class="col-md-3 stat-item">
+                    <i class="fas fa-users"></i>
+                    <h4>{{ startup.team_size }}</h4>
+                    <p>Team Members</p>
+                </div>
+                <div class="col-md-3 stat-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <h4>{{ startup.funding }}</h4>
+                    <p>Funding</p>
+                </div>
+                <div class="col-md-3 stat-item">
+                    <i class="fas fa-globe"></i>
+                    <h4>{{ startup.country }}</h4>
+                    <p>Location</p>
+                </div>
+                <div class="col-md-3 stat-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h4>{{ startup.registrationDate }}</h4>
+                    <p>Founded</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="startup-content">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h3 class="mb-4">About {{ startup.name }}</h3>
+                    <p class="lead">{{ startup.description }}</p>
+                    
+                    <div class="industry-tags">
+                        <h4 class="mb-3">Industries</h4>
+                        {% for industry in startup.industry.split %}
+                            <span class="industry-tag">{{ industry }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <img src="{{ startup.image.url }}" alt="{{ startup.name }}" class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">Quick Facts</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-map-marker-alt text-warning me-2"></i> {{ startup.country }}</li>
+                                <li class="mb-2"><i class="fas fa-calendar text-warning me-2"></i> Founded: {{ startup.registrationDate }}</li>
+                                <li class="mb-2"><i class="fas fa-users text-warning me-2"></i> Team Size: {{ startup.team_size }}</li>
+                                <li class="mb-2"><i class="fas fa-dollar-sign text-warning me-2"></i> Funding: {{ startup.funding }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'startups:startups' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <!-- Keep your existing footer here -->
+    <footer class="u-align-center-sm u-align-center-xs u-black u-clearfix u-footer" id="sec-a832">
+        <!-- ... existing footer code ... -->
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 {% endblock %}
