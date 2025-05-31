@@ -14,3 +14,5 @@ django-storages==1.14.2
 boto3==1.29.3
 uvicorn
 dj-database-url
+boto3
+django-storages
