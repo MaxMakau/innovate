@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "courses",
     "custom_admin",
     "startups",
+    "storages",
 ]
 
 MIDDLEWARE = [
@@ -144,6 +145,23 @@ EMAIL_HOST_PASSWORD = 'your-app-specific-password'  # Your email password or app
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LOGIN_URL = '/users/login/'  # Adjust this path to match your URL configuration
+
+#amazon s3 for media files persistence
+# AWS credentials
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+
+# S3 bucket settings
+AWS_STORAGE_BUCKET_NAME = 'django-max'
+AWS_S3_REGION_NAME = 'us-west-2'  # Change to your S3 region
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+# Set default file storage
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# Optional: Set media URL
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+
 
 LOGGING = {
     'version': 1,
