@@ -76,44 +76,46 @@
         </nav>
       </div></header>
 
-      <div class="container py-5">
-        <h2 class="page-title">Featured Innovators</h2>
-        
-        <div class="row g-4">
-            {% for startup in startups %}
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="startup-card card">
-                    <img src="{{ startup.image.url }}" alt="{{ startup.name }}" class="startup-image">
-                    <div class="startup-content">
-                        <h3 class="h4 mb-3">{{ startup.name }}</h3>
-                        <div class="startup-stats">
-                            <div class="stat-item">
-                                <i class="fas fa-users"></i>
-                                <span>{{ startup.team_size }} Team</span>
+      <section class="startup-section">
+        <div class="container">
+            <h2 class="page-title">Featured Innovators</h2>
+            
+            <div class="row g-4">
+                {% for startup in startups %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="startup-card">
+                        <img src="{{ startup.image.url }}" alt="{{ startup.name }}" class="startup-image">
+                        <div class="startup-content">
+                            <h3>{{ startup.name }}</h3>
+                            <div class="startup-stats">
+                                <div class="stat-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>{{ startup.team_size }} Team</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>{{ startup.funding }}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <i class="fas fa-globe"></i>
+                                    <span>{{ startup.country }}</span>
+                                </div>
                             </div>
-                            <div class="stat-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span>{{ startup.funding }}</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fas fa-globe"></i>
-                                <span>{{ startup.country }}</span>
-                            </div>
+                            <p class="text-muted">{{ startup.description|truncatewords:20 }}</p>
+                            <a href="{% url 'startups:startup_detail' startup.id %}" class="btn-learn-more">
+                                Learn More <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
                         </div>
-                        <p class="text-muted mb-3">{{ startup.description|truncatewords:20 }}</p>
-                        <a href="{% url 'startups:startup_detail' startup.id %}" class="btn-learn-more">
-                            Learn More <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
                     </div>
                 </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p>No startups available at the moment.</p>
+                </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p>No startups available at the moment.</p>
-            </div>
-            {% endfor %}
         </div>
-    </div>
+    </section>
     
     
     
