@@ -129,7 +129,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files configuration
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -147,13 +147,13 @@ EMAIL_HOST_PASSWORD = 'your-app-specific-password'  # Your email password or app
 LOGIN_URL = '/users/login/'  # Adjust this path to match your URL configuration
 
 #amazon s3 for media files persistence
+AWS_DEFAULT_ACL = None  # Important: disables public-read default to avoid permission issues
+AWS_QUERYSTRING_AUTH = False
 # AWS credentials
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-
-# S3 bucket settings
-AWS_STORAGE_BUCKET_NAME = 'django-max'
-AWS_S3_REGION_NAME = 'us-west-2'  # Change to your S3 region
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
 # Set default file storage
