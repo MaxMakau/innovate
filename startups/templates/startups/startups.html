@@ -76,43 +76,51 @@
         </nav>
       </div></header>
 
-      <section class="startup-section">
-        <div class="container">
-            <h2 class="page-title">Featured Innovators</h2>
-            
-            <div class="row g-4">
-                {% for startup in startups %}
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="startup-card">
-                        <img src="{{ startup.image.url }}" alt="{{ startup.name }}" class="startup-image">
-                        <div class="startup-content">
-                            <h3>{{ startup.name }}</h3>
-                            <div class="startup-stats">
-                                <div class="stat-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>{{ startup.team_size }} Team</span>
+      <section class="u-clearfix u-section-6" id="startups" style="padding: 30px 0; background-color: #f8f9fa;">
+        <div class="u-clearfix u-sheet u-sheet-1">
+            <h4 class="u-align-center u-text u-text-default u-text-1 mb-3" style="text-align: center; margin: 0 auto; width: 100%;">Startups in Kenya and Africa</h4>
+            <div class="u-expanded-width u-gallery u-layout-grid u-lightbox u-show-text-on-hover u-gallery-1" style="padding: 10px;">
+                <div class="u-gallery-inner u-gallery-inner-1" style="grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                    {% for startup in startups %}
+                    <div class="startup-card" style="border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); background: white; display: flex; flex-direction: column;">
+                        <!-- Image Section -->
+                        <div style="height: 250px; overflow: hidden;">
+                            {% if startup.image %}
+                                <img src="{{ startup.image.url }}" alt="{{ startup.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/default-startup.jpg' %}" alt="Default Startup Image" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% endif %}
+                        </div>
+
+                        <!-- Details Section -->
+                        <div style="padding: 20px; display: flex; flex-direction: column; flex-grow: 1;">
+                            <h3 style="font-size: 1.4rem; margin-bottom: 15px; color: #333; padding-left: 8px;">{{ startup.name }}</h3>
+                            
+                            <!-- Stats Section -->
+                            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; padding-left: 8px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-users" style="color: #f39c12; width: 20px;"></i>
+                                    <span style="color: #666;">Team Size: <strong>{{ startup.team_size }} members</strong></span>
                                 </div>
-                                <div class="stat-item">
-                                    <i class="fas fa-dollar-sign"></i>
-                                    <span>{{ startup.funding }}</span>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-dollar-sign" style="color: #f39c12; width: 20px;"></i>
+                                    <span style="color: #666;">Funding: <strong>${{ startup.funding }}</strong></span>
                                 </div>
-                                <div class="stat-item">
-                                    <i class="fas fa-globe"></i>
-                                    <span>{{ startup.country }}</span>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-globe" style="color: #f39c12; width: 20px;"></i>
+                                    <span style="color: #666;">Location: <strong>{{ startup.country }}</strong></span>
                                 </div>
                             </div>
-                            <p class="text-muted">{{ startup.description|truncatewords:20 }}</p>
-                            <a href="{% url 'startups:startup_detail' startup.id %}" class="btn-learn-more">
-                                Learn More <i class="fas fa-arrow-right ms-2"></i>
-                            </a>
+                            
+                            <a href="{% url 'startups:startup_detail' startup.id %}" class="btn btn-primary mt-auto" style="margin: 0 auto; background-color: #f39c12; border: none; padding: 10px 25px; border-radius: 25px; color: white; text-decoration: none; font-weight: 500;">View More</a>
                         </div>
                     </div>
+                    {% empty %}
+                    <div class="u-align-center u-container-style u-gallery-item u-shape-rectangle" style="grid-column: 1 / -1;">
+                        <p style="font-size: 1.2rem; color: #666;">No startups available at the moment.</p>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% empty %}
-                <div class="col-12 text-center">
-                    <p>No startups available at the moment.</p>
-                </div>
-                {% endfor %}
             </div>
         </div>
     </section>
