@@ -162,7 +162,14 @@
                                     </div>
                                     <div class="user-info">
                                         <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
-                                        <span class="user-role">Administrator</span>
+                                        <span class="user-role">
+                                            {% if request.user.is_superuser %}
+                                                Administrator
+                                            {% else %}
+                                                Member
+                                            {% endif %}
+                                        </span>
+
                                     </div>
                                     <i class="fas fa-chevron-down dropdown-arrow"></i>
                                 </button>
@@ -181,9 +188,10 @@
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item logout-item" href="{% url 'logout' %}">
+                                        <a class="dropdown-item logout-item" href="{% url 'users:logout' %}">
                                             <i class="fas fa-sign-out-alt"></i>
                                             <span>Logout</span>
+                                        </a>
                                         </a>
                                     </li>
                                 </ul>

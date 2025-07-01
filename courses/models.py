@@ -71,6 +71,7 @@ class Lesson(models.Model):
     description = models.TextField(blank=True) # Added description
     lesson_type = models.CharField(max_length=10, choices=LESSON_TYPES) # To distinguish content type
     order = models.PositiveIntegerField(default=0) # Changed to PositiveIntegerField and added default
+    duration = models.DecimalField(max_digits=5, decimal_places=2, default=1.0)  # duration in hours
 
     class Meta:
         ordering = ['order']

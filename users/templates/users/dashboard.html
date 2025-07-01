@@ -75,6 +75,23 @@
             <div class="u-black u-menu-overlay u-opacity u-opacity-70"></div>
           </div>
         </nav>
+        <div class="notifications-container" style="position: absolute; top: 20px; right: -50px;">
+  <a href="{% url 'users:notifications' %}" class="notification-icon" style="position: relative; color: #f39c12; text-decoration: none;">
+    <i class="fas fa-bell fa-lg"></i>
+    <span class="badge" style="
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+    ">
+      {{ notifications_count }}
+    </span>
+  </a>
+</div>
       </div></header>
 
 
@@ -92,20 +109,25 @@
             <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User Avatar" class="avatar">
           {% endif %}
         </div>
-        <div class="profile-dropdown" id="profileDropdown">
+       <!--<div class="profile-dropdown" id="profileDropdown">
           <h3>Update Profile</h3>
           <input type="text" name="firstName" placeholder="First Name">
           <input type="text" name="lastName" placeholder="Last Name">
           <button class="update-btn">Update</button>
+        </div>-->
+
+        <!--Keep dropdown but no form --> 
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="{% url 'users:profile' %}">View Profile</a>
         </div>
       </div>
       <nav class="nav-menu">
         <ul>
-          <li class="active"><a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li class="active"><a href="{% url 'users:dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
           <li><a href="{% url 'courses:course_list' %}"><i class="fas fa-book"></i> Browse Courses</a></li>
-          <li><a href="{% url 'profile' %}"><i class="fas fa-user"></i> My Profile</a></li>
-          <li><a href="#"><i class="fas fa-star"></i> Personalized Courses</a></li>
-          <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          <li><a href="{% url 'users:profile' %}"><i class="fas fa-user"></i> My Profile</a></li>
+          <li><a href="{% url 'courses:personalized' %}"><i class="fas fa-star"></i> Personalized Courses</a></li>
+          <li><a href="{% url 'users:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
       </nav>
     </aside>
@@ -169,6 +191,21 @@
         </div>
       </section>
 
+      <!-- Recent Activities -->
+      <section class="recent-activities">
+        <h3>Recent Activities</h3>
+        <ul>
+          {% for activity in recent_activities %}
+          <li>
+            {{ activity.timestamp|date:"M d, Y H:i" }} — {{ activity.message }}
+          </li>
+            {% empty %}
+          <li>No recent activities found.</li>
+           {% endfor %}
+        </ul>
+      </section>
+
+
       <!-- My Courses -->
       <section class="my-courses-section">
         <div class="section-header">
@@ -200,7 +237,7 @@
           <div class="course-progress-card">
             <h4>{{ course.title }}</h4>
             <div class="progress-bar-container">
-              <div class="progress-bar" style="width: {{ course.progress }}%"></div>
+              <div class="progress-bar" style="width: {{ course.progress|default_if_none:0 }}%"></div>
             </div>
             <p>{{ course.completed_lessons }} of {{ course.total_lessons }} lessons completed</p>
           </div>
@@ -326,7 +363,7 @@ const firstNameInput = document.querySelector('input[name="firstName"]');
 const lastNameInput = document.querySelector('input[name="lastName"]');
 
 
-updateBtn.addEventListener('click', () => {
+/* updateBtn.addEventListener('click', () => {
     const firstName = firstNameInput.value.trim();
     const lastName = lastNameInput.value.trim();
     
@@ -344,7 +381,7 @@ updateBtn.addEventListener('click', () => {
     } else {
         showNotification('Please fill in all fields', 'error');
     }
-});
+}); */
 
 // Sample courses data
 

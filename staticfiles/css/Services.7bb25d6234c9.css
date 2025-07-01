@@ -1,0 +1,122 @@
+/* Cleaned Services.css - Only used styles from Services.html retained */
+
+.u-section-1 {
+  background-image: none;
+  min-height: 679px;
+}
+
+.u-section-1 .u-sheet-1 {
+  min-height: 679px;
+}
+
+.u-section-1 .u-text-1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 60px auto 0;
+}
+
+.u-section-1 .u-text-2 {
+  width: 680px;
+  margin: 20px auto 0;
+}
+
+.u-section-1 .u-list-1 {
+  margin-top: 45px;
+  margin-bottom: 60px;
+}
+
+.u-section-1 .u-repeater-1 {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  min-height: 327px;
+  grid-gap: 30px;
+}
+
+.u-section-1 .u-container-layout-1 {
+  padding: 30px;
+}
+
+.u-section-1 .u-icon-1 {
+  height: 64px;
+  width: 64px;
+  margin: 0 auto;
+}
+
+.u-section-1 .u-text-3 {
+  font-weight: 700;
+  margin: 20px auto 0;
+}
+
+.u-section-1 .u-text-4 {
+  margin: 20px auto 0;
+}
+
+.u-section-2,
+.u-section-3,
+.u-section-4,
+.u-section-5 {
+  padding: 60px 0;
+}
+
+.u-section-2 .u-sheet-1,
+.u-section-3 .u-sheet-1,
+.u-section-4 .u-sheet-1,
+.u-section-5 .u-sheet-1 {
+  min-height: auto;
+}
+
+.u-section-2 .u-text-1,
+.u-section-3 .u-text-1,
+.u-section-4 .u-text-1,
+.u-section-5 .u-text-1 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.u-section-2 .u-btn-1,
+.u-section-3 .u-btn-1,
+.u-section-4 .u-btn-1,
+.u-section-5 .u-btn-1 {
+  background-color: #2f80ed;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.u-section-2 .u-btn-1:hover,
+.u-section-3 .u-btn-1:hover,
+.u-section-4 .u-btn-1:hover,
+.u-section-5 .u-btn-1:hover {
+  background-color: #1c60b3;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .u-section-1 .u-text-1 {
+    font-size: 2.25rem;
+  }
+
+  .u-section-1 .u-text-2 {
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .u-section-1 .u-repeater-1 {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .u-section-1 .u-icon-1 {
+    height: 48px;
+    width: 48px;
+  }
+
+  .u-section-1 .u-container-layout-1 {
+    padding: 20px;
+  }
+}

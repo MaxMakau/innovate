@@ -1,3 +1,4 @@
+import logging
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,12 +9,15 @@ from django.db import transaction
 from django.utils import timezone
 from django.urls import reverse
 from django.http import Http404, JsonResponse
+from django.db.models import Count
+
 
 # IMPORTANT: Replace 'your_app_name' with the actual name of your Django app where models are defined.
 from courses.models import (
     Course, Category, Module, Lesson, VideoLesson, TextLesson, LessonImage,
     Enrollment, LessonProgress, Quiz, Question, Option, QuizAttempt
 )
+logger = logging.getLogger(__name__)  # Add this line
 
 # --- Course Listing View ---
 class CourseListView(ListView):
@@ -509,68 +513,88 @@ def module_list(request, slug): # Use slug for course
 
 # --- Course Progress Overview ---
 @login_required
-def course_progress(request, slug): # Use slug for course
+def course_progress(request, slug):
     """
-    Displays a detailed overview of the user's progress in a specific course.
+    Displays detailed overview of user's progress in a specific course.
     """
-    course = get_object_or_404(Course, slug=slug, status='published')
-    enrollment = get_object_or_404(
-        Enrollment,
-        student=request.user,
-        course=course
-    )
-    
-    # Get all lessons and their progress status
-    all_lessons = Lesson.objects.filter(module__course=course).select_related(
-        'videolesson', 'textlesson' # Prefetch content to check duration/type
-    ).order_by('module__order', 'order')
-
-    # Get all lesson progress entries for this enrollment
-    lesson_progresses = {
-        progress.lesson_id: progress for progress in LessonProgress.objects.filter(
-            enrollment=enrollment
+    try:
+        # Get course and enrollment
+        course = get_object_or_404(Course, slug=slug, status='published')
+        enrollment = get_object_or_404(
+            Enrollment,
+            student=request.user,
+            course=course
         )
-    }
+        
+        # Get all lessons with optimized queries
+        all_lessons = Lesson.objects.filter(module__course=course).select_related(
+            'videolesson', 'textlesson', 'quiz'
+        ).prefetch_related('module').order_by('module__order', 'order')
 
-    lessons_with_status = []
-    total_lessons_count = 0
-    completed_lessons_count = 0
-    for lesson in all_lessons:
-        total_lessons_count += 1
-        progress = lesson_progresses.get(lesson.id)
-        is_completed = progress.is_completed if progress else False
-        if is_completed:
-            completed_lessons_count += 1
-        lessons_with_status.append({
-            'lesson': lesson,
-            'is_completed': is_completed,
-            'last_accessed': progress.last_accessed if progress else None,
-            'completed_date': progress.completed_date if progress else None,
-            'video_current_time': progress.video_current_time if progress else 0.0,
-            # Add specific lesson content for display if needed
-            'video_content': getattr(lesson, 'videolesson', None),
-            'text_content': getattr(lesson, 'textlesson', None),
-            'quiz': getattr(lesson, 'quiz', None),
-        })
-    
-    progress_percentage = (completed_lessons_count / total_lessons_count * 100) if total_lessons_count > 0 else 0
-    
-    # Get quiz attempts for all quizzes in this course
-    quiz_attempts = QuizAttempt.objects.filter(
-        enrollment=enrollment,
-        quiz__lesson__module__course=course
-    ).select_related('quiz__lesson').order_by('-completed_date') # Order by newest attempt first
-    
-    context = {
-        'course': course,
-        'enrollment': enrollment,
-        'progress_percentage': progress_percentage,
-        'completed_lessons_count': completed_lessons_count,
-        'total_lessons_count': total_lessons_count,
-        'lessons_with_status': lessons_with_status,
-        'quiz_attempts': quiz_attempts,
-    }
-    return render(request, 'courses/course_progress.html', context)
+        # Prefetch lesson progresses in one query
+        lesson_progresses = {
+            progress.lesson_id: progress 
+            for progress in LessonProgress.objects.filter(enrollment=enrollment)
+        }
+
+        # Prepare lessons data
+        lessons_with_status = []
+        total_lessons_count = all_lessons.count()
+        completed_lessons_count = 0
+        
+        for lesson in all_lessons:
+            progress = lesson_progresses.get(lesson.id)
+            is_completed = progress.is_completed if progress else False
+            completed_lessons_count += 1 if is_completed else 0
+            
+            lessons_with_status.append({
+                'lesson': lesson,
+                'is_completed': is_completed,
+                'last_accessed': progress.last_accessed if progress else None,
+                'completed_date': progress.completed_date if progress else None,
+                'video_current_time': progress.video_current_time if progress else 0.0,
+                'video_content': getattr(lesson, 'videolesson', None),
+                'text_content': getattr(lesson, 'textlesson', None),
+                'quiz': getattr(lesson, 'quiz', None),
+                'module_title': lesson.module.title
+            })
+
+        # Calculate progress
+        progress_percentage = round(
+            (completed_lessons_count / total_lessons_count * 100)
+        ) if total_lessons_count > 0 else 0
+
+        # Get quiz attempts
+        quiz_attempts = QuizAttempt.objects.filter(
+            enrollment=enrollment,
+            quiz__lesson__module__course=course
+        ).select_related('quiz__lesson').order_by('-completed_date')
+
+        context = {
+            'course': course,
+            'enrollment': enrollment,
+            'progress_percentage': progress_percentage,
+            'completed_lessons': completed_lessons_count,
+            'total_lessons': total_lessons_count,
+            'lessons': lessons_with_status,  # Changed from lessons_with_status for consistency
+            'quiz_attempts': quiz_attempts,
+        }
+        
+        return render(request, 'courses/course_progress.html', context)
+
+    except Http404:
+        # Provide specific error messages
+        if not Course.objects.filter(slug=slug).exists():
+            raise Http404(f"No course found with slug: '{slug}'")
+        elif not Course.objects.filter(slug=slug, status='published').exists():
+            raise Http404(f"Course '{slug}' exists but isn't published")
+        elif not Enrollment.objects.filter(student=request.user, course__slug=slug).exists():
+            raise Http404(f"You are not enrolled in course '{slug}'")
+        raise
+        
+    except Exception as e:
+        logger.error(f"Error in course_progress view: {str(e)}")
+        raise Http404("Could not load course progress")
 
 # --- Additional API-like views for client-side progress tracking ---
 @login_required
@@ -604,6 +628,25 @@ def update_video_progress(request, lesson_id):
             return JsonResponse({'status': 'error', 'message': 'Invalid data format'}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
+@login_required
+def personalized_courses_view(request):
+    user = request.user
+    
+    # Get IDs of courses the user is already enrolled in
+    enrolled_course_ids = Enrollment.objects.filter(student=user).values_list('course_id', flat=True)
+
+    # Get popular courses the user hasn't enrolled in, ordered by number of enrollments
+    recommended_courses = (
+        Course.objects
+        .exclude(id__in=enrolled_course_ids)
+        .annotate(enrollment_count=Count('enrollments'))  # annotate with enrollment count
+        .order_by('-enrollment_count')[:5]  # top 5 popular
+    )
+
+    context = {
+        'recommended_courses': recommended_courses
+    }
+    return render(request, 'courses/personalized.html', context)
 
 # Don't forget to add JsonResponse to your imports if you use update_video_progress
 

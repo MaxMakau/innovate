@@ -83,14 +83,29 @@
             
                 <p class="courses-count">{{ courses|length }} courses found</p>
             </div>
+            <!-- Wrap Sort Dropdown in a GET form -->
             <div class="sort-dropdown">
-                <label for="sort-select">Sort by:</label>
-                <select id="sort-select">
-                    <option value="title">Title</option>
-                    <option value="price">Price</option>
-                    <option value="duration">Duration</option>
-                </select>
+                <form method="get" id="sort-form">
+                    <label for="sort-select">Sort by:</label>
+                    <select name="sort" id="sort-select" onchange="document.getElementById('sort-form').submit()">
+                        <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Title</option>
+                        <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Price (Low to High)</option>
+                        <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Price (High to Low)</option>
+                        <option value="duration_asc" {% if sort_by == 'duration_asc' %}selected{% endif %}>Duration (Short to Long)</option>
+                        <option value="duration_desc" {% if sort_by == 'duration_desc' %}selected{% endif %}>Duration (Long to Short)</option>
+                        <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
+                    </select>
+
+                    <!-- Preserve existing filters -->
+                    {% if search_query %}
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                    {% endif %}
+                    {% if selected_category_slug %}
+                    <input type="hidden" name="category" value="{{ selected_category_slug }}">
+                    {% endif %}
+                </form>
             </div>
+
         </div>
     
         {% if courses %}
