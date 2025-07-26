@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <title>{% block title %}Innovate and Elevate Academy{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -20,12 +21,12 @@
             </div>
             <ul class="nav-links">
                 <li><a href="{% url 'services:homepage' %}">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#blog">Blog</a></li>
-                <li><a href="#events">Events</a></li>
-                <li><a href="#startups">Startups</a></li>
-                <li><a href="#">Join Us</a></li>
+                <li><a href="{% url 'services:homepage' %}#about">About</a></li>
+                <li><a href="{% url 'services:homepage' %}#services">Services</a></li>
+                <li><a href="{% url 'services:homepage' %}#blog">Blog</a></li>
+                <li><a href="{% url 'services:homepage' %}#events">Events</a></li>
+                <li><a href="{% url 'startups:startups' %}">Startups</a></li>
+                <li><a href="{% url 'users:register' %}">Join Us</a></li>
             </ul>
             <div class="hamburger-menu" id="hamburger-btn">
                 <div class="bar"></div>
@@ -39,18 +40,18 @@
                     </button>
                 </div>
                 <ul class="mobile-nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#blog">Blog</a></li>
-                    <li><a href="#events">Events</a></li>
-                    <li><a href="#startups">Startups</a></li>
-                    <li><a href="#">Join Us</a></li>
+                    <li><a href="{% url 'services:homepage' %}">Home</a></li>
+                    <li><a href="{% url 'services:homepage' %}#about">About</a></li>
+                    <li><a href="{% url 'services:homepage' %}#services">Services</a></li>
+                    <li><a href="{% url 'services:homepage' %}#blog">Blog</a></li>
+                    <li><a href="{% url 'services:homepage' %}#events">Events</a></li>
+                    <li><a href="{% url 'startups:startups' %}">Startups</a></li>
+                    <li><a href="{% url 'users:register' %}">Join Us</a></li>
                 </ul>
             </div>
         </nav>
     </header>
-
+`   
     <!-- Messages -->
     {% if messages %}
     <div class="messages">
@@ -82,8 +83,8 @@
                 <ul style="display: flex; gap: 1rem; list-style: none;">
                     <li><a href="{% url 'services:homepage' %}">Home</a></li>
                     <li><a href="{% url 'courses:course_list' %}">Courses</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="{% url 'services:homepage' %}#about">About</a></li>
+                    <li><a href="{% url 'services:homepage' %}#contact">Contact</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -112,7 +113,6 @@
     {% block extra_js %}{% endblock %}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu functionality
             const hamburgerBtn = document.getElementById('hamburger-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             const closeMenuBtn = document.getElementById('close-menu');
@@ -128,22 +128,15 @@
             if (hamburgerBtn && mobileMenu && closeMenuBtn) {
                 hamburgerBtn.addEventListener('click', toggleMenu);
                 closeMenuBtn.addEventListener('click', toggleMenu);
-
-                // Close menu when clicking on mobile nav links
                 mobileNavLinks.forEach(link => {
                     link.addEventListener('click', toggleMenu);
                 });
-
-                // Close menu when clicking outside
                 document.addEventListener('click', function(event) {
-                    const isClickInside = mobileMenu.contains(event.target) || 
-                                        hamburgerBtn.contains(event.target);
+                    const isClickInside = mobileMenu.contains(event.target) || hamburgerBtn.contains(event.target);
                     if (!isClickInside && mobileMenu.classList.contains('active')) {
                         toggleMenu();
                     }
                 });
-
-                // Close mobile menu when window is resized to desktop size
                 window.addEventListener('resize', function() {
                     if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
                         toggleMenu();
@@ -151,7 +144,6 @@
                 });
             }
 
-            // Message dismissal
             const messages = document.querySelectorAll('.message');
             messages.forEach(message => {
                 const closeBtn = message.querySelector('.close-message');
@@ -160,12 +152,13 @@
                         message.remove();
                     });
                 }
-                // Auto-dismiss after 5 seconds
                 setTimeout(() => {
                     message.remove();
                 }, 5000);
             });
         });
     </script>
+    
+
 </body>
 </html>

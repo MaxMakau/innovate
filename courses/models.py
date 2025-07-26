@@ -71,6 +71,7 @@ class Lesson(models.Model):
     description = models.TextField(blank=True) # Added description
     lesson_type = models.CharField(max_length=10, choices=LESSON_TYPES) # To distinguish content type
     order = models.PositiveIntegerField(default=0) # Changed to PositiveIntegerField and added default
+    duration = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)  # duration in hours
 
     class Meta:
         ordering = ['order']
@@ -189,28 +190,36 @@ class QuizAttempt(models.Model):
         return f"{self.enrollment.student.username} - {self.quiz.title} Attempt ({self.score}%)"
 
 class PersonalizedSession(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='sessions')
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='personalized_sessions') # Linked to User model
-    instructor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sessions_led') # Optional: Link to instructor
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='sessions',
+        null=True, blank=True  # Make course optional
+    )
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='personalized_sessions')
+    instructor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sessions_led')
     preferred_date = models.DateTimeField()
-    alternate_date = models.DateTimeField(null=True, blank=True) # Made optional
+    alternate_date = models.DateTimeField(null=True, blank=True)
     meeting_link = models.URLField(blank=True, null=True)
     status = models.CharField(
         max_length=20,
         choices=[
             ('PENDING', 'Pending'),
-            ('CONFIRMED', 'Confirmed'), 
+            ('CONFIRMED', 'Confirmed'),
             ('COMPLETED', 'Completed'),
             ('CANCELLED', 'Cancelled')
         ],
         default='PENDING'
     )
-    notes = models.TextField(blank=True, null=True) # Added null=True
+    topic = models.CharField(max_length=255, blank=True, help_text="Topic or subject for the personalized session")  # New field
+    description = models.TextField(blank=True, null=True, help_text="Describe what you want to learn or discuss in this session")  # Renamed from notes
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Session for {self.student.username} on {self.course.title}"
+        if self.course:
+            return f"Session for {self.student.username} on {self.course.title}"
+        return f"Session for {self.student.username} (Topic: {self.topic})"
 
     class Meta:
         ordering = ['-preferred_date']

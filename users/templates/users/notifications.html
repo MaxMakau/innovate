@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Header Styling */
+        header {
+            background-color: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo img {
+            height: 50px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: black;
+            font-weight: 500;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: gold;
+            border-bottom: 2px solid royalblue;
+        }
+
+        /* Main Notifications Content */
+        main {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .notification {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .no-notifications {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            color: #777;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007BFF;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .mark-read-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Footer Styling */
+        footer {
+            background-color: black;
+            color: white;
+            padding: 40px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .footer-section {
+            flex: 1 1 30%;
+            margin: 10px;
+        }
+
+        .footer-section h3 {
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            border-bottom: 2px solid white;
+            padding-bottom: 5px;
+            text-align: left;
+        }
+
+        .footer-section p, .footer-section a {
+            color: white;
+            display: block;
+            margin: 5px 0;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            text-decoration: underline;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px; /* space between icons */
+            margin-top: 10px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.2em;
+            text-decoration: none;
+        }
+
+        .footer-logo img {
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .footer-slogan {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .copyright {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .contact-info i {
+            margin-right: 8px;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <div class="nav-container">
+        <div class="nav-logo">
+            <a href="{% url 'services:homepage' %}">
+                <img src="{% static 'images/logo.png' %}" alt="Logo">
+            </a>
+        </div>
+        <nav class="nav-links">
+            <a href="{% url 'services:homepage' %}">Home</a>
+            <a href="{% url 'courses:course_list' %}">Courses</a>
+            <a href="{% url 'startups:startups' %}">Startups</a>
+            <a href="{% url 'services:homepage' %}#sec-0021">About Us</a>
+            <a href="{% url 'services:homepage' %}#block-1">Our Services</a>
+            <a href="{% url 'services:homepage' %}#block-2">Blog</a>
+            <a href="{% url 'services:homepage' %}#block-5">Our Team</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <h2>Your Notifications</h2>
+
+    {% if notifications %}
+        <ul>
+            {% for notification in notifications %}
+                <li class="notification">
+                    <span>{{ notification.message }}</span>
+                    <span>{{ notification.timestamp|timesince }} ago</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <form method="post" action="{% url 'users:mark_all_read' %}">
+            {% csrf_token %}
+            <button type="submit" class="mark-read-btn">Mark all as read</button>
+        </form>
+    {% else %}
+        <div class="no-notifications">You have no notifications at this time.</div>
+    {% endif %}
+
+    <a href="{% url 'users:dashboard' %}" class="back-link">← Back to Dashboard</a>
+</main>
+
+<footer>
+    <!-- Section 1 -->
+    <div class="footer-section">
+        <div class="footer-logo">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <div class="footer-slogan">
+            We provide multiple solutions to help your business drive value, foster innovation, enhance performance
+        </div>
+        <div class="copyright">
+            &copy; {% now "Y" %} Innovate & Elevate Academy. All rights reserved.
+        </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="footer-section">
+        <h3>Help</h3>
+        <a href="{% url 'services:homepage' %}#sec-0021">About Us</a>
+        <a href="{% url 'services:homepage' %}#block-1">Services</a>
+        <a href="{% url 'services:homepage' %}#block-3">Contact Us</a>
+        <a href="{% url 'services:homepage' %}#block-2">News & Blogs</a>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="footer-section">
+        <h3>Get in Touch</h3>
+        <p class="contact-info"><i class="fas fa-map-marker-alt"></i> 14 E 12th St, New York, NY 10007, United States</p>
+        <p class="contact-info"><i class="fas fa-envelope"></i> hi@company.com</p>
+        <p class="contact-info"><i class="fas fa-phone"></i> +12345678910</p>
+    </div>
+</footer>
+</body>
+</html>

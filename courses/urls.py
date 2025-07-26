@@ -7,6 +7,8 @@ app_name = 'courses'  # This provides URL namespace
 urlpatterns = [
     # Course listing (changed from 'courselist/' to just '/')
     path('', views.CourseListView.as_view(), name='course_list'),
+    path('personalized/', views.personalized_courses_view, name='personalized'),
+    
 
     # Course details, checkout, payment, modules, and progress now use SLUG
     # Changed from <int:course_id>/ to <slug:slug>/
@@ -16,6 +18,7 @@ urlpatterns = [
     path('<slug:slug>/process-payment/', views.process_payment, name='process_payment'),
     path('<slug:slug>/modules/', views.module_list, name='module_list'),
     path('<slug:slug>/progress/', views.course_progress, name='course_progress'),
+    
 
     # Lesson paths now use PK (primary key)
     # Changed from <int:lesson_id>/ to <int:pk>/

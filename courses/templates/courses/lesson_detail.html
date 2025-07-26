@@ -105,14 +105,14 @@
                         {% if video_content.video_file %}
                             <video controls preload="metadata" ontimeupdate="updateVideoProgress(this)" data-lesson-id="{{ lesson.pk }}"
                                    {% if progress.video_current_time %}
-                                       onloadstart="this.currentTime={{ progress.video_current_time }};"
+                                       onloadstart="this.currentTime={{ progress.video_current_time }}"
                                    {% endif %}
                             >
                                 <source src="{{ video_content.video_file.url }}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         {% elif video_content.video_url %}
-                            {# Use the custom template filter to get the embed URL #}
+                            <!-- Use the custom template filter to get the embed URL -->
                             <iframe
                                 src="{{ video_content.video_url|youtube_embed_url }}"
                                 frameborder="0"

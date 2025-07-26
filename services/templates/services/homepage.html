@@ -58,9 +58,9 @@ pricing plans, ​Optimize your business growth, ​It's different working with 
 </li><li class="u-nav-item"><a class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" href="#block-5" style="padding: 6px 0px;">Our Team</a>
 <li class="u-nav-item">
     {% if user.is_authenticated %}
-    <a href="{% url 'dashboard' %}" class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" style="padding: 6px 15px; background-color: #f39c12; color: white !important; border-radius: 4px; margin: 0 5px;">{{ user.first_name }}, Dashboard</a>
+    <a href="{% url 'users:dashboard' %}" class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" style="padding: 6px 15px; background-color: #f39c12; color: white !important; border-radius: 4px; margin: 0 5px;">{{ user.first_name }}, Dashboard</a>
     {% else %}
-    <a href="{% url 'login' %}" class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" style="padding: 6px 15px; background-color: #f39c12; color: white !important; border-radius: 4px; margin: 0 5px;">Sign Up</a>
+    <a href="{% url 'users:login' %}" class="u-border-2 u-border-active-palette-1-base u-border-hover-palette-1-light-1 u-border-no-left u-border-no-right u-border-no-top u-button-style u-nav-link u-text-active-black u-text-grey-90 u-text-hover-custom-color-1" style="padding: 6px 15px; background-color: #f39c12; color: white !important; border-radius: 4px; margin: 0 5px;">Sign Up</a>
     {% endif %}
 </li>
 </li></ul>
@@ -103,7 +103,7 @@ pricing plans, ​Optimize your business growth, ​It's different working with 
                   <div class="custom-expanded u-align-center u-border-2 u-border-grey-75 u-container-align-center u-container-align-center-lg u-container-align-center-md u-container-align-center-sm u-container-align-center-xl u-container-align-center-xxl u-container-style u-grey-5 u-group u-opacity u-opacity-75 u-radius u-shape-round u-group-1">
                     <div class="u-container-layout u-valign-bottom-lg u-valign-bottom-sm u-valign-bottom-xl u-container-layout-3">
                       <p class="u-align-center u-small-text u-text u-text-variant u-text-6"> We offer comprehensive training aligned with all 17 Sustainable Development Goals (SDGs), ensuring our graduates are ready to take on leadership roles that create lasting change.</p>
-                      <a href="{% url 'login' %}" class="u-active-black u-align-left u-btn u-button-style u-custom-color-1 u-hover-black u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Get Started</a>
+                      <a href="{% url 'users:login' %}" class="u-active-black u-align-left u-btn u-button-style u-custom-color-1 u-hover-black u-btn-1" data-animation-name="" data-animation-duration="0" data-animation-delay="0" data-animation-direction="">Get Started</a>
                     </div>
                   </div>
                 </div>
@@ -290,11 +290,13 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
             <div class="u-align-center u-blog-post u-container-align-center u-container-style u-grey-5 u-repeater-item">
               <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-container-layout-1">
                 <a class="u-post-header-link" href="#">
+                {% if post.image %}
                   <img alt="{{ post.title }}" class="u-blog-control u-expanded-width u-image u-image-default u-image-1" src="{{ post.image.url }}" data-image-width="1000" data-image-height="899">
-                </a>
+                {% else %}
+                  <img alt="{{ post.title }}" class="u-blog-control u-expanded-width u-image u-image-default u-image-1" src="{% static 'images/cybershield.jpeg' %}" data-image-width="1000" data-image-height="899">
+                {% endif %}                </a>
                 <h2 class="u-blog-control u-subtitle u-text u-text-2">
                   <a class="u-post-header-link" href="#">{{ post.title }}</a>
-                  
                 </h2>
                 <p class="u-small-text u-text u-text-variant">{{ post.content|truncatewords:20 }}</p>
                 <div class="u-blog-control u-metadata u-text-grey-50 u-metadata-1">
