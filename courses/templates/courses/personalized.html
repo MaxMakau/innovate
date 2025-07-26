@@ -14,13 +14,11 @@
             margin: 0;
             padding: 0;
         }
-
-         header {
+        header {
             background-color: white;
             padding: 15px 0;
             border-bottom: 1px solid #ddd;
         }
-
         .nav-container {
             max-width: 1100px;
             margin: 0 auto;
@@ -28,16 +26,13 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .nav-logo img {
             height: 50px;
         }
-
         .nav-links {
             display: flex;
             gap: 20px;
         }
-
         .nav-links a {
             text-decoration: none;
             color: black;
@@ -45,12 +40,10 @@
             padding: 5px;
             transition: all 0.3s ease;
         }
-
         .nav-links a:hover {
             color: gold;
             border-bottom: 2px solid royalblue;
         }
-
         footer {
             background-color: black;
             color: white;
@@ -59,12 +52,10 @@
             flex-wrap: wrap;
             justify-content: space-between;
         }
-
         .footer-section {
             flex: 1 1 30%;
             margin: 10px;
         }
-
         .footer-section h3 {
             text-transform: uppercase;
             margin-bottom: 10px;
@@ -72,49 +63,40 @@
             padding-bottom: 5px;
             text-align: left;
         }
-
         .footer-section p, .footer-section a {
             color: white;
             display: block;
             margin: 5px 0;
             text-decoration: none;
         }
-
         .footer-section a:hover {
             text-decoration: underline;
         }
-
         .social-icons {
             display: flex;
-            gap: 15px; /* space between icons */
+            gap: 15px;
             margin-top: 10px;
         }
-
         .social-icons a {
             color: white;
             font-size: 1.2em;
             text-decoration: none;
         }
-
         .footer-logo img {
             height: 50px;
             margin-bottom: 10px;
         }
-
         .footer-slogan {
             font-weight: bold;
             margin-bottom: 10px;
         }
-
         .copyright {
             margin-top: 10px;
             font-size: 0.9em;
         }
-
         .contact-info i {
             margin-right: 8px;
         }
-
         /* Main content styles */
         .recommend-container {
             max-width: 700px;
@@ -124,20 +106,17 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-
         .recommend-container h2 {
             text-align: center;
             margin-bottom: 20px;
             font-size: 2em;
             color: #333;
         }
-
         .recommend-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-
         .recommend-list li {
             padding: 15px 20px;
             border-bottom: 1px solid #eee;
@@ -146,28 +125,125 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .recommend-list li a {
             text-decoration: none;
             color: #007BFF;
             font-weight: 500;
         }
-
         .recommend-list li a:hover {
             color: #f39c12;
             text-decoration: underline;
         }
-
         .recommend-list li:last-child {
             border-bottom: none;
         }
-
         .no-recommendation {
             text-align: center;
             color: #777;
             font-size: 1.1em;
             padding: 20px;
         }
+        /* Personalized Session Form Styles */
+        .personalized-form-section {
+            background: #f9fafc;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 30px 25px 20px 25px;
+            margin-bottom: 35px;
+        }
+        .personalized-form-section h3 {
+            text-align: center;
+            color: #1a237e;
+            margin-bottom: 18px;
+            font-size: 1.5em;
+        }
+        .personalized-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .personalized-form label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .personalized-form input[type="text"],
+        .personalized-form input[type="datetime-local"],
+        .personalized-form select,
+        .personalized-form textarea {
+            padding: 10px;
+            border: 1px solid #cfd8dc;
+            border-radius: 5px;
+            font-size: 1em;
+            background: #fff;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .personalized-form textarea {
+            min-height: 70px;
+            resize: vertical;
+        }
+        .personalized-form button {
+            background: #1a237e;
+            color: #fff;
+            border: none;
+            padding: 12px 0;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .personalized-form button:hover {
+            background: #3949ab;
+        }
+        .form-note {
+            font-size: 0.95em;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        /* Session History Table */
+        .session-history-section {
+            margin-bottom: 35px;
+        }
+        .session-history-section h3 {
+            color: #1a237e;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+        .session-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .session-history-table th, .session-history-table td {
+            padding: 12px 10px;
+            text-align: left;
+        }
+        .session-history-table th {
+            background: #f1f3f6;
+            color: #333;
+            font-weight: 600;
+        }
+        .session-history-table tr:nth-child(even) {
+            background: #f9fafc;
+        }
+        .session-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.95em;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .status-PENDING { background: #fff3cd; color: #856404; }
+        .status-CONFIRMED { background: #d4edda; color: #155724; }
+        .status-COMPLETED { background: #cce5ff; color: #004085; }
+        .status-CANCELLED { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 
@@ -195,8 +271,106 @@
 
 <!-- MAIN CONTENT -->
 <div class="recommend-container">
-    <h2>Recommended Popular Courses</h2>
 
+    <!-- Personalized Session Booking Form -->
+    <section class="personalized-form-section">
+        <h3>Book a Personalized 1-on-1 Session</h3>
+        <form method="post" class="personalized-form" autocomplete="off">
+            {% csrf_token %}
+            <div>
+                <label for="course">Select Course (optional):</label>
+                <select name="course" id="course">
+                    <option value="">-- Not related to any course --</option>
+                    {% for course in recommended_courses %}
+                        <option value="{{ course.id }}">{{ course.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="topic">Session Topic <span style="color:#e53935;">*</span></label>
+                <input type="text" name="topic" id="topic" maxlength="255" placeholder="e.g. Python for Data Science">
+            </div>
+            <div>
+                <label for="description">Describe what you want to learn or discuss <span style="color:#e53935;">*</span></label>
+                <textarea name="description" id="description" maxlength="1000" placeholder="Give details about your learning goals, questions, or expectations..."></textarea>
+            </div>
+            <div>
+                <label for="preferred_date">Preferred Date & Time <span style="color:#e53935;">*</span></label>
+                <input type="datetime-local" name="preferred_date" id="preferred_date" required>
+            </div>
+            <div>
+                <label for="alternate_date">Alternate Date & Time (optional):</label>
+                <input type="datetime-local" name="alternate_date" id="alternate_date">
+            </div>
+            <div class="form-note">
+                Fields marked with <span style="color:#e53935;">*</span> are required.<br>
+                You can request a session based on a course or just a topic.
+            </div>
+            <button type="submit">Request Session</button>
+        </form>
+    </section>
+
+    <!-- Session History -->
+    <section class="session-history-section">
+        <h3>Your Personalized Session Requests</h3>
+        {% if my_sessions %}
+            <table class="session-history-table">
+                <thead>
+                    <tr>
+                        <th>Topic / Course</th>
+                        <th>Preferred Date</th>
+                        <th>Status</th>
+                        <th>Instructor</th>
+                        <th>Meeting Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in my_sessions %}
+                        <tr>
+                            <td>
+                                {% if session.course %}
+                                    <strong>{{ session.course.title }}</strong>
+                                {% elif session.topic %}
+                                    <strong>{{ session.topic }}</strong>
+                                {% else %}
+                                    <em>Not specified</em>
+                                {% endif %}
+                                <br>
+                                <span style="font-size:0.95em; color:#666;">{{ session.description|truncatechars:60 }}</span>
+                            </td>
+                            <td>{{ session.preferred_date|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <span class="session-status status-{{ session.status }}">
+                                    {{ session.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if session.instructor %}
+                                    {{ session.instructor.get_full_name|default:session.instructor.username }}
+                                {% else %}
+                                    <em>Not assigned</em>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if session.meeting_link %}
+                                    <a href="{{ session.meeting_link }}" target="_blank">Join</a>
+                                {% else %}
+                                    <em>Pending</em>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-recommendation">
+                You have not requested any personalized sessions yet.
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- Recommended Courses -->
+    <h2>Recommended Popular Courses</h2>
     {% if recommended_courses %}
         <ul class="recommend-list">
             {% for course in recommended_courses %}
@@ -229,7 +403,6 @@
             &copy; {% now "Y" %} Innovate & Elevate Academy. All rights reserved.
         </div>
     </div>
-
     <!-- Section 2 -->
     <div class="footer-section">
         <h3>Help</h3>
@@ -244,7 +417,6 @@
             <a href="#"><i class="fab fa-instagram"></i></a>
         </div>
     </div>
-
     <!-- Section 3 -->
     <div class="footer-section">
         <h3>Get in Touch</h3>

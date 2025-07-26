@@ -23,6 +23,10 @@ from .models import Notification
 @require_http_methods(["GET", "POST"])
 def login_view(request):
     if request.user.is_authenticated:
+
+        if request.user.is_superuser:
+            return redirect('custom_admin:dashboard')
+        
         return redirect_user_dashboard(request.user)
     
     if request.method == 'POST':
@@ -34,6 +38,8 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f"Welcome back, {user.first_name}!")
+                if user.is_superuser:
+                    return redirect('custom_admin:dashboard')
                 return redirect_user_dashboard(user)
         else:
             messages.error(request, "Invalid username or password.")
@@ -49,7 +55,7 @@ def redirect_user_dashboard(user):
 def logout_view(request):
     logout(request)
     messages.info(request, "You have successfully logged out.")
-    return redirect('login')
+    return redirect('users:login')
 
 @login_required
 def dashboard_view(request):
@@ -157,7 +163,7 @@ def register_view(request):
 
         login(request, user)
         messages.success(request, f"Welcome to Elevate Academy, {user.first_name}!")
-        return redirect('dashboard')
+        return redirect('users:dashboard')
 
     return render(request, 'users/login.html')
 

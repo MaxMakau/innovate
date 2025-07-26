@@ -290,8 +290,11 @@ c6.177,6.18,9.262,14.271,9.262,22.366C354.708,234.018,351.617,242.115,345.441,24
             <div class="u-align-center u-blog-post u-container-align-center u-container-style u-grey-5 u-repeater-item">
               <div class="u-container-layout u-similar-container u-valign-top-lg u-valign-top-md u-valign-top-sm u-valign-top-xl u-container-layout-1">
                 <a class="u-post-header-link" href="#">
-                  <img alt="{{ post.title }}" class="u-blog-control u-expanded-width u-image u-image-default u-image-1" src="{% static '/images/IMG-20250428-WA0010.jpg' %}" data-image-width="1000" data-image-height="899">
-                </a>
+                {% if post.image %}
+                  <img alt="{{ post.title }}" class="u-blog-control u-expanded-width u-image u-image-default u-image-1" src="{{ post.image.url }}" data-image-width="1000" data-image-height="899">
+                {% else %}
+                  <img alt="{{ post.title }}" class="u-blog-control u-expanded-width u-image u-image-default u-image-1" src="{% static 'images/cybershield.jpeg' %}" data-image-width="1000" data-image-height="899">
+                {% endif %}                </a>
                 <h2 class="u-blog-control u-subtitle u-text u-text-2">
                   <a class="u-post-header-link" href="#">{{ post.title }}</a>
                 </h2>

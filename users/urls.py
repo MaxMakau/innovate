@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from django.urls import include
 
 app_name = 'users'
 
@@ -10,6 +11,7 @@ urlpatterns = [
     path('profile/', views.profile_view, name='profile'),
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
+    path('custom_admin/', include('custom_admin.urls', namespace='custom_admin')),
 
     # Password reset views
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name='users/password_reset_form.html'), name='password_reset'),

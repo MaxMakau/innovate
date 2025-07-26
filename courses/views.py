@@ -15,7 +15,7 @@ from django.db.models import Count
 # IMPORTANT: Replace 'your_app_name' with the actual name of your Django app where models are defined.
 from courses.models import (
     Course, Category, Module, Lesson, VideoLesson, TextLesson, LessonImage,
-    Enrollment, LessonProgress, Quiz, Question, Option, QuizAttempt
+    Enrollment, LessonProgress, Quiz, Question, Option, QuizAttempt, PersonalizedSession
 )
 logger = logging.getLogger(__name__)  # Add this line
 
@@ -631,20 +631,55 @@ def update_video_progress(request, lesson_id):
 @login_required
 def personalized_courses_view(request):
     user = request.user
-    
-    # Get IDs of courses the user is already enrolled in
-    enrolled_course_ids = Enrollment.objects.filter(student=user).values_list('course_id', flat=True)
 
-    # Get popular courses the user hasn't enrolled in, ordered by number of enrollments
+    # Handle POST: Student submits a personalized session request
+    if request.method == 'POST':
+        course_id = request.POST.get('course')  # Optional, can be blank
+        topic = request.POST.get('topic', '').strip()
+        description = request.POST.get('description', '').strip()
+        preferred_date = request.POST.get('preferred_date')
+        alternate_date = request.POST.get('alternate_date')
+
+        # Validate required fields
+        if not topic and not course_id:
+            messages.error(request, "Please provide a topic or select a course.")
+        elif not preferred_date:
+            messages.error(request, "Please provide your preferred date for the session.")
+        else:
+            course = None
+            if course_id:
+                try:
+                    course = Course.objects.get(id=course_id)
+                except Course.DoesNotExist:
+                    course = None
+
+            PersonalizedSession.objects.create(
+                course=course,
+                student=user,
+                topic=topic,
+                description=description,
+                preferred_date=preferred_date,
+                alternate_date=alternate_date if alternate_date else None,
+                status='PENDING'
+            )
+            messages.success(request, "Your personalized session request has been submitted.")
+            return redirect('courses:personalized')  # Update to your URL name
+
+    # GET: Show recommended courses and user's personalized session requests
+    enrolled_course_ids = Enrollment.objects.filter(student=user).values_list('course_id', flat=True)
     recommended_courses = (
         Course.objects
         .exclude(id__in=enrolled_course_ids)
-        .annotate(enrollment_count=Count('enrollments'))  # annotate with enrollment count
-        .order_by('-enrollment_count')[:5]  # top 5 popular
+        .annotate(enrollment_count=Count('enrollments'))
+        .order_by('-enrollment_count')[:5]
     )
 
+    # Show user's personalized session requests
+    my_sessions = PersonalizedSession.objects.filter(student=user).order_by('-created_date')
+
     context = {
-        'recommended_courses': recommended_courses
+        'recommended_courses': recommended_courses,
+        'my_sessions': my_sessions,
     }
     return render(request, 'courses/personalized.html', context)
 
